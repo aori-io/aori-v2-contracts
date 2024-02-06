@@ -11,3 +11,5 @@ test-deploy-arbitrum-sepolia:
 	forge script script/Deploy.s.sol:DeployScript --fork-url https://sepolia-rollup.arbitrum.io/rpc --via-ir --broadcast
 test-deploy-arbitrum:
 	forge script script/Deploy.s.sol:DeployScript --fork-url https://arb1.arbitrum.io/rpc --via-ir --broadcast --legacy
+test-deploy-mevm-m1:
+	forge script script/Deploy.s.sol:DeployScript --fork-url https://mevm.devnet.m1.movementlabs.xyz/v1 --via-ir --broadcast
