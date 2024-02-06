@@ -24,9 +24,11 @@ make tests ## run tests
 
 | Chain | Address Deployed To|
 | --- | --- |
-| `5 (Goerli)` | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://goerli.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) | 
-| `11155111 (Sepolia)` | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+| `5 (Goerli)` | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://goerli.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+| `42161 (Arbitrum One)` | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 | `421614 (Arbitrum Sepolia)` | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+| `11155111 (Sepolia)` | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+
 
 ### Dependencies
 
