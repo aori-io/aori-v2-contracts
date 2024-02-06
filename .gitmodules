@@ -1,0 +1,15 @@
+[submodule "lib/ds-test"]
+	path = lib/ds-test
+	url = https://github.com/dapphub/ds-test
+[submodule "lib/solmate"]
+	path = lib/solmate
+	url = https://github.com/Rari-Capital/solmate
+[submodule "lib/forge-std"]
+	path = lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "lib/create3-factory"]
+	path = lib/create3-factory
+	url = https://github.com/aori-io/create3-factory
+[submodule "lib/LayerZero-v2"]
+	path = lib/LayerZero-v2
+	url = https://github.com/LayerZero-Labs/LayerZero-v2

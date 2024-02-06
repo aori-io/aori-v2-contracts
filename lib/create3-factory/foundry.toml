@@ -1,0 +1,85 @@
+[profile.default]
+optimizer_runs = 1000000
+
+[rpc_endpoints]
+mainnet = "${RPC_URL_MAINNET}"
+polygon = "${RPC_URL_POLYGON}"
+polygon-zkevm = "${RPC_URL_POLYGON_ZKEVM}"
+bsc = "${RPC_URL_BSC}"
+gnosis = "${RPC_URL_GNOSIS}"
+fantom = "${RPC_URL_FANTOM}"
+okx = "${RPC_URL_OKX}"
+avalanche = "${RPC_URL_AVALANCHE}"
+arbitrum = "${RPC_URL_ARBITRUM}"
+optimism = "${RPC_URL_OPTIMISM}"
+manta = "${RPC_URL_MANTA}"
+moonriver = "${RPC_URL_MOONRIVER}"
+moonbeam = "${RPC_URL_MOONBEAM}"
+canto = "${RPC_URL_CANTO}"
+celo = "${RPC_URL_CELO}"
+fuse = "${RPC_URL_FUSE}"
+cronos = "${RPC_URL_CRONOS}"
+velas = "${RPC_URL_VELAS}"
+harmony = "${RPC_URL_HARMONY}"
+evmos = "${RPC_URL_EVMOS}"
+aurora = "${RPC_URL_AURORA}"
+boba = "${RPC_URL_BOBA}"
+nova = "${RPC_URL_NOVA}"
+zksync = "${RPC_URL_ZKSYNC}"
+zkevm = "${RPC_URL_ZKEVM}"
+base = "${RPC_URL_BASE}"
+linea = "${RPC_URL_LINEA}"
+kava = "${RPC_URL_KAVA}"
+opbnb = "${RPC_URL_OPBNB}"
+mantle = "${RPC_URL_MANTLE}"
+scroll = "${RPC_URL_SCROLL}"
+pulsechain = "${RPC_URL_PULSECHAIN}"
+zora = "${RPC_URL_ZORA}"
+klaytn = "${RPC_URL_KLAYTN}"
+flare = "${RPC_URL_FLARE}"
+
+# testnets
+goerli = "${RPC_URL_GOERLI}"
+sepolia = "${RPC_URL_SEPOLIA}"
+holesky = "${RPC_URL_HOLESKY}"
+mumbai = "${RPC_URL_MUMBAI}"
+arbitrum-goerli = "${RPC_URL_ARBITRUM_GOERLI}"
+arbitrum-sepolia = "${RPC_URL_ARBITRUM_SEPOLIA}"
+consensys-zkevm-testnet = "${RPC_URL_CONSENSYS_ZKEVM_TESTNET}"
+bsc-testnet = "${RPC_URL_BSC_TESTNET}"
+scroll-alpha = "${RPC_URL_SCROLL_ALPHA}"
+linea-goerli = "${RPC_URL_LINEA_GOERLI}"
+avalanche-fuji = "${RPC_URL_AVALANCHE_FUJI}"
+arbitrum-stylus-testnet = "${RPC_URL_ARBITRUM_STYLUS_TESTNET}"
+optimism-goerli = "${RPC_URL_OPTIMISM_GOERLI}"
+optimism-sepolia = "${RPC_URL_OPTIMISM_SEPOLIA}"
+fantom-testnet = "${RPC_URL_FANTOM_TESTNET}"
+frame-testnet = "${RPC_URL_FRAME_TESTNET}"
+taiko-jolnir = "${RPC_URL_TAIKO_JOLNIR}"
+mode-sepolia = "${RPC_URL_MODE_SEPOLIA}"
+opbnb-testnet = "${RPC_URL_OPBNB_TESTNET}"
+mantle-testnet = "${RPC_URL_MANTLE_TESTNET}"
+base-goerli = "${RPC_URL_BASE_GOERLI}"
+
+[etherscan]
+mainnet = { key = "${ETHERSCAN_KEY}" }
+polygon = { key = "${POLYGONSCAN_KEY}", url = "https://api.polygonscan.com/api" }
+bsc = { key = "${BSCSCAN_KEY}", url = "https://api.bscscan.com/api" }
+gnosis = { key = "${GNOSISBSCOUT_KEY}", url = "https://blockscout.com/poa/xdai/api" }
+fantom = { key = "${FTMSCAN_KEY}", url = "https://api.ftmscan.com/api" }
+avalanche = { key = "${SNOWTRACE_KEY}", url = "https://api.snowtrace.io/api" }
+arbitrum = { key = "${ARBISCAN_KEY}", url = "https://api.arbiscan.io/api" }
+optimism = { key = "${OPTIMISM_ETHERSCAN_KEY}", url = "https://api-optimistic.etherscan.io/api" }
+moonriver = { key = "${MOONRIVER_MOONSCAN_KEY}", url = "https://api-moonriver.moonscan.io/api" }
+moonbeam = { key = "${MOONBEAM_MOONSCAN_KEY}", url = "https://api-moonbeam.moonscan.io/api" }
+nova = { key = "${NOVA_ARBISCAN_KEY}", url = "https://nova.arbiscan.io/api" }
+base = { key = "${BASESCAN_API_KEY}", url = "https://api.basescan.org/api" }
+linea = { key = "${LINEASCAN_API_KEY}", url = "https://api.lineascan.build/api" }
+
+#testnets
+linea-goerli = { key = "${LINEASCAN_API_KEY}", url = "https://api-goerli.lineascan.build/api" }
+goerli = { key = "${ETHERSCAN_KEY}" }
+sepolia = { key = "${ETHERSCAN_KEY}" }
+mumbai = { key = "${POLYGONSCAN_KEY}", url = "https://api-testnet.polygonscan.com/api" }
+arbitrum-goerli = { key = "${ARBISCAN_KEY}", url = "https://api-goerli.arbiscan.io/api" }
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config
