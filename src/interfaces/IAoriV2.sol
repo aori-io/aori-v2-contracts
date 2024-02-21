@@ -44,6 +44,12 @@ interface IAoriV2 {
     event OrdersSettled(
         bytes32 indexed makerHash,
         bytes32 indexed takerHash,
+        address maker,
+        address taker,
+        address inputChainId,
+        address outputChainId,
+        address inputZone,
+        address outputZone,
         address inputToken,
         address outputToken,
         uint256 inputAmount,
