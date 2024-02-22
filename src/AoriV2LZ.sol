@@ -257,12 +257,18 @@ contract AoriV2 is IAoriV2, OApp {
 
             // Emit events
             emit OrdersSettled(
-                makerHash,
-                takerHash,
-                matching.makerOrder.inputToken,
-                matching.makerOrder.outputToken,
-                matching.makerOrder.inputAmount,
-                matching.makerOrder.outputAmount,
+                makerHash, // makerHash
+                takerHash, // takerHash
+                matching.makerOrder.offerer, // maker
+                matching.takerOrder.offerer, // taker
+                matching.makerOrder.inputChainId, // inputChainId
+                matching.makerOrder.outputChainId, // outputChainId
+                matching.makerOrder.inputZone, // inputZone
+                matching.makerOrder.outputZone, // outputZone
+                matching.makerOrder.inputToken, // inputToken
+                matching.makerOrder.outputToken, // outputToken
+                matching.makerOrder.inputAmount, // inputAmount
+                matching.makerOrder.outputAmount, // outputAmount
                 getMatchingHash(matching)
             );
         
