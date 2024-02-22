@@ -5,11 +5,11 @@ import "forge-std/console.sol";
 import {ICREATE3Factory} from "create3-factory/src/ICREATE3Factory.sol";
 
 contract MultichainDeployScript is Script {
-    function deployToNetwork(string memory tag, string memory network, string memory saltString, bytes memory bytecode) internal {
+    function deployTo(string memory network, string memory tag, bytes memory bytecode) internal {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         address deployerAddress = vm.addr(deployerPrivateKey);
         address create3FactoryAddress = vm.envAddress("CREATE3FACTORY_ADDRESS");
-        bytes32 salt = keccak256(bytes(saltString));
+        bytes32 salt = keccak256(bytes(tag));
 
         vm.createSelectFork(network);
         address addressToDeployTo = ICREATE3Factory(create3FactoryAddress).getDeployed(
