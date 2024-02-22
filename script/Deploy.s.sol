@@ -3,23 +3,30 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
 import {ICREATE3Factory} from "create3-factory/src/ICREATE3Factory.sol";
+import { MultichainDeployScript } from "./MultichainDeploy.s.sol";
 import "../src/AoriV2.sol";
 
-contract DeployScript is Script {
+contract DeployScript is Script, MultichainDeployScript {
     function run() external {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         address deployerAddress = vm.addr(deployerPrivateKey);
-        address create3FactoryAddress = vm.envAddress("CREATE3FACTORY_ADDRESS");
+        bytes memory bytecode = abi.encodePacked(type(AoriV2).creationCode, abi.encode(deployerAddress));
 
-        vm.startBroadcast(deployerPrivateKey);
-        ICREATE3Factory(create3FactoryAddress).deploy(
-            keccak256(bytes("Aori V2.0")),
-            abi.encodePacked(
-                type(AoriV2).creationCode,
-                abi.encode(deployerAddress)
-            )
-        );
+        string memory AORI_VERSION = "Aori v2.1";
 
-        vm.stopBroadcast();
+        /*//////////////////////////////////////////////////////////////
+                                    TESTNETS
+        //////////////////////////////////////////////////////////////*/
+
+        deployToNetwork(AORI_VERSION, "goerli", AORI_VERSION, bytecode);
+        deployToNetwork(AORI_VERSION, "sepolia", AORI_VERSION, bytecode);
+        deployToNetwork(AORI_VERSION, "arbitrum-sepolia", AORI_VERSION, bytecode);
+
+        /*//////////////////////////////////////////////////////////////
+                                    MAINNETS
+        //////////////////////////////////////////////////////////////*/
+
+        // deployToNetwork(AORI_VERSION, "arbitrum", AORI_VERSION, bytecode);
+        // deployToNetwork(AORI_VERSION, "mainnet", AORI_VERSION, bytecode);
     }
 }
