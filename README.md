@@ -22,7 +22,7 @@ make tests ## run tests
 
 ## Deployments
 
-| Chain | `v2.1` | `v2.0` |
+| Chain | `Aori v2.1` | `Aori v2.0` |
 | --- | :---: | --- |
 | `1 (Mainnet)` | [-]() | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 | `5 (Goerli)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://goerli.etherscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://goerli.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
