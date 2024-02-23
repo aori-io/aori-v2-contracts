@@ -337,10 +337,6 @@ contract AoriV2 is IAoriV2 {
         return addressCounter[msg.sender];
     }
 
-    function version() external view returns (string memory) {
-        return "2.0";
-    }
-
     /*//////////////////////////////////////////////////////////////
                                TAKER FEE
     //////////////////////////////////////////////////////////////*/
