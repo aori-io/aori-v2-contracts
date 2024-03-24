@@ -18,9 +18,10 @@ contract DeployScript is Script, MultichainDeployScript {
                                     TESTNETS
         //////////////////////////////////////////////////////////////*/
 
-        deployTo("goerli", AORI_VERSION, bytecode);
-        deployTo("sepolia", AORI_VERSION, bytecode);
-        deployTo("arbitrum-sepolia", AORI_VERSION, bytecode);
+        // deployTo("goerli", AORI_VERSION, bytecode);
+        // deployTo("sepolia", AORI_VERSION, bytecode);
+        // deployTo("arbitrum-sepolia", AORI_VERSION, bytecode);
+        deployTo("berachain-artio", AORI_VERSION, bytecode);
 
         /*//////////////////////////////////////////////////////////////
                                     MAINNETS
