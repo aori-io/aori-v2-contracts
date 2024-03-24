@@ -16,7 +16,6 @@ verbosity = 4
 
 [rpc_endpoints]
 mainnet = "https://rpc.ankr.com/eth"
-goerli = "https://rpc.ankr.com/eth_goerli"
 sepolia = "https://rpc.ankr.com/eth_sepolia"
 arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
 arbitrum = "https://arb1.arbitrum.io/rpc"
