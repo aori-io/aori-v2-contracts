@@ -15,8 +15,19 @@ fuzz_runs = 100_000
 verbosity = 4
 
 [rpc_endpoints]
+# Mainnets
 mainnet = "https://rpc.ankr.com/eth"
-sepolia = "https://rpc.ankr.com/eth_sepolia"
-arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
 arbitrum = "https://arb1.arbitrum.io/rpc"
+base = "https://rpc.notadegen.com/base"
+blast = "https://rpc.blastapi.io"
+optimism = "https://mainnet.optimism.io"
+polygon = "https://polygon-rpc.com"
+
+# Testnets
+arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
 berachain-artio = "https://artio.rpc.berachain.com"
+base-sepolia = "https://rpc.notadegen.com/base/sepolia"
+blast-sepolia = "https://sepolia.blast.io"
+optimism-sepolia = "https://sepolia.optimism.io"
+sepolia = "https://rpc.ankr.com/eth_sepolia"
+mevm-m1 = "https://mevm.devnet.m1.movementlabs.xyz/v1"

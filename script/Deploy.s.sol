@@ -21,7 +21,8 @@ contract DeployScript is Script, MultichainDeployScript {
         // deployTo("goerli", AORI_VERSION, bytecode);
         // deployTo("sepolia", AORI_VERSION, bytecode);
         // deployTo("arbitrum-sepolia", AORI_VERSION, bytecode);
-        deployTo("arbitrum", AORI_VERSION, bytecode);
+        // deployTo("arbitrum", AORI_VERSION, bytecode);
+        deployTo("mevm-m1", AORI_VERSION, bytecode);
         // deployTo("berachain-artio", AORI_VERSION, bytecode);
 
         /*//////////////////////////////////////////////////////////////
