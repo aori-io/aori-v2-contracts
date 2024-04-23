@@ -20,7 +20,7 @@ mainnet = "https://rpc.ankr.com/eth"
 arbitrum = "https://arb1.arbitrum.io/rpc"
 base = "https://1rpc.io/base"
 blast = "https://rpc.blastapi.io"
-optimism = "https://mainnet.optimism.io"
+optimism = "https://optimism.drpc.org"
 polygon = "https://polygon-rpc.com"
 
 # Testnets

@@ -22,16 +22,26 @@ make tests ## run tests
 
 ## Deployments
 
+### Mainnets
+
 | Chain | `Aori v2.1` | `Aori v2.0` |
 | --- | :---: | --- |
-| `1 (Mainnet)` | [-]() | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+| `1 (Ethereum)` | [-]() | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+| `10 (OP) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://optimistic.etherscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
+| `137 (Polygon) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://polygonscan.com/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
+| `8453 (Base)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://basescan.org/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-]() |
+| `42161 (Arbitrum One)` |  [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://arbiscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+
+### Testnets
+
+| Chain | `Aori v2.1` | `Aori v2.0` |
+| --- | :---: | --- |
 | `5 (Goerli)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://goerli.etherscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://goerli.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 | `336 (MEVM M1)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5]() | [-]() |
-| `8453 (Base Mainnet)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://basescan.org/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-]() |
-| `42161 (Arbitrum One)` |  [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://arbiscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 | `80085 (Berachain Artio) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://artio.beratrail.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5) | [-]() |
 | `421614 (Arbitrum Sepolia)` |  [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://sepolia.arbiscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 | `11155111 (Sepolia)` |  [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://sepolia.etherscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+
 
 
 ### Dependencies
