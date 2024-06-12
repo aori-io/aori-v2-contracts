@@ -8,9 +8,6 @@
 [submodule "lib/create3-factory"]
 	path = lib/create3-factory
 	url = https://github.com/aori-io/create3-factory
-[submodule "lib/LayerZero-v2"]
-	path = lib/LayerZero-v2
-	url = https://github.com/LayerZero-Labs/LayerZero-v2
 [submodule "lib/ds-test"]
 	path = lib/ds-test
 	url = https://github.com/dapphub/ds-test
