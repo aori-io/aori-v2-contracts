@@ -27,6 +27,7 @@ avalanche = "https://avalanche.drpc.org"
 bsc = "https://1rpc.io/bnb"
 gnosis = "https://rpc.ankr.com/gnosis"
 scroll = "https://scroll.drpc.org"
+celo = "https://forno.celo.org"
 
 # Testnets
 arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
