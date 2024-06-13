@@ -22,6 +22,9 @@ base = "https://1rpc.io/base"
 blast = "https://rpc.ankr.com/blast"
 optimism = "https://optimism.drpc.org"
 polygon = "https://rpc.ankr.com/polygon"
+linea = "https://rpc.linea.build"
+avalanche = "https://avalanche.drpc.org"
+bsc = "https://1rpc.io/bnb"
 
 # Testnets
 arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"
