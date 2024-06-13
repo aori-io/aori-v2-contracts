@@ -30,7 +30,7 @@ contract DeployScript is Script, MultichainDeployScript {
         //////////////////////////////////////////////////////////////*/
 
         // deployTo("arbitrum", AORI_VERSION, bytecode);
-        // deployTo("mainnet", AORI_VERSION, bytecode);
+        deployTo("mainnet", AORI_VERSION, bytecode);
         // deployTo("optimism", AORI_VERSION, bytecode);
         // deployTo("polygon", AORI_VERSION, bytecode);
         // deployTo("blast", AORI_VERSION, bytecode);
@@ -38,7 +38,7 @@ contract DeployScript is Script, MultichainDeployScript {
         // deployTo("linea", AORI_VERSION, bytecode);
         // deployTo("mantle", AORI_VERSION, bytecode);
         // deployTo("gnosis", AORI_VERSION, bytecode);
-        deployTo("scroll", AORI_VERSION, bytecode);
+        // deployTo("scroll", AORI_VERSION, bytecode);
         // deployTo("bsc", AORI_VERSION, bytecode);
         // deployTo("avalanche", AORI_VERSION, bytecode);
     }
