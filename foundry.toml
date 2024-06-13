@@ -25,6 +25,8 @@ polygon = "https://rpc.ankr.com/polygon"
 linea = "https://rpc.linea.build"
 avalanche = "https://avalanche.drpc.org"
 bsc = "https://1rpc.io/bnb"
+gnosis = "https://rpc.ankr.com/gnosis"
+scroll = "https://scroll.drpc.org"
 
 # Testnets
 arbitrum-sepolia = "https://sepolia-rollup.arbitrum.io/rpc"

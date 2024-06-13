@@ -27,14 +27,16 @@ make tests ## run tests
 | Chain | `Aori v2.1` | `Aori v2.0` |
 | --- | :---: | --- |
 | `1 (Ethereum)` | [-]() | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
-| `10 (OP) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://optimistic.etherscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
+| `10 (Optimism) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://optimistic.etherscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
 | `56 (BNB Smart Chain) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://bscscan.com/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
+| `100 (Gnosis Chain) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://gnosisscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
 | `137 (Polygon) ` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://polygonscan.com/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
 | `8453 (Base)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://basescan.org/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-]() |
 | `42161 (Arbitrum One)` |  [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://arbiscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 | `43114 (Avalanche)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://snowtrace.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
 | `59144 (Linea)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://lineascan.build/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
 | `81457 (Blast Mainnet)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://blastscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-]()
+| `534352 (Scroll)` | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://scrollscan.com/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [-](-) |
 
 ### Testnets
 

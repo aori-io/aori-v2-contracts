@@ -36,7 +36,9 @@ contract DeployScript is Script, MultichainDeployScript {
         // deployTo("blast", AORI_VERSION, bytecode);
         // deployTo("base", AORI_VERSION, bytecode);
         // deployTo("linea", AORI_VERSION, bytecode);
-        deployTo("mantle", AORI_VERSION, bytecode);
+        // deployTo("mantle", AORI_VERSION, bytecode);
+        // deployTo("gnosis", AORI_VERSION, bytecode);
+        deployTo("scroll", AORI_VERSION, bytecode);
         // deployTo("bsc", AORI_VERSION, bytecode);
         // deployTo("avalanche", AORI_VERSION, bytecode);
     }
