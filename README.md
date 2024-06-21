@@ -44,8 +44,8 @@ make tests ## run tests
 | Chain | `Aori v2.2` | `Aori v2.1` | `Aori v2.0` |
 | --- | :---: | :---: | :---: |
 | `336 (MEVM M1)` | [-]() | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5]() | [-]() |
-| `80085 (Berachain Artio) ` | [-]() | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://artio.beratrail.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5) | [-]() |
-| `421614 (Arbitrum Sepolia)` | [-]() | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://sepolia.arbiscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
+| `80085 (Berachain Artio) ` | [0x0AD86842EadEe5b484E31db60716EB6867B46e21](https://artio.beratrail.io/address/0x0AD86842EadEe5b484E31db60716EB6867B46e21#code) | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://artio.beratrail.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5) | [-](-) |
+| `421614 (Arbitrum Sepolia)` | [0x0AD86842EadEe5b484E31db60716EB6867B46e21](https://sepolia.arbiscan.io/address/0x0AD86842EadEe5b484E31db60716EB6867B46e21#code) | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://sepolia.arbiscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.arbiscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 | `11155111 (Sepolia)` | [0x0AD86842EadEe5b484E31db60716EB6867B46e21](https://sepolia.etherscan.io/address/0x0AD86842EadEe5b484E31db60716EB6867B46e21#code) | [0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5](https://sepolia.etherscan.io/address/0xcc1A0DA89593441571f35Dd99a0aC1856d3F1FB5#code) | [0x6A979916234013AbA003d906e4e7136496B90AA6](https://sepolia.etherscan.io/address/0x6A979916234013AbA003d906e4e7136496B90AA6#code) |
 
 ### Dependencies
