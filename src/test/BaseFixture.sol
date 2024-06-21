@@ -249,6 +249,14 @@ contract BaseFixture is DSTest {
         vm.stopPrank();
     }
 
+    function _settleAoriOrders_successfulCustomSettler(address settler, IAoriV2.Order memory makerOrder, IAoriV2.Order memory takerOrder) public {
+        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(makerOrder, takerOrder);
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        vm.startPrank(settler);
+        aori.settleOrders(matching, abi.encodePacked(serverR, serverS, serverV), "", "");
+        vm.stopPrank();
+    }
+
     function _settleAoriMatching_expectRevert(IAoriV2.MatchingDetails memory matching, bytes memory revertData) public {
         vm.startPrank(SERVER_WALLET);
         (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);

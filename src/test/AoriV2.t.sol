@@ -722,4 +722,42 @@ contract AoriV2Test is BaseFixture {
         aori.setTakerFee(100, TAKER_WALLET);
         vm.stopPrank();
     }
+
+    /*//////////////////////////////////////////////////////////////
+                             WITHDRAW FEES
+    //////////////////////////////////////////////////////////////*/
+
+    function testWithdrawFees_successMaker() public {
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 103, address(tokenB), 100);
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 102, address(tokenA), 100);
+        /// Prepare
+        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 103);
+        _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 102);
+        /// Settle
+        _settleAoriOrders_successfulCustomSettler(MAKER_WALLET, makerOrder, takerOrder);
+
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 3);
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenB)) == 102);
+        assert(aori.balanceOf(TAKER_WALLET, address(tokenA)) == 100);
+        assert(aori.balanceOf(TAKER_WALLET, address(tokenB)) == 0);
+        assert(aori.balanceOf(SERVER_WALLET, address(tokenA)) == 0);
+        assert(aori.balanceOf(SERVER_WALLET, address(tokenB)) == 0);
+    }
+
+    function testWithdrawFees_successThirdPartySettler() public {
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 103, address(tokenB), 100);
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 102, address(tokenA), 100);
+        /// Prepare
+        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 103);
+        _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 102);
+        /// Settle
+        _settleAoriOrders_successful(makerOrder, takerOrder);
+
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 0);
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenB)) == 100);
+        assert(aori.balanceOf(TAKER_WALLET, address(tokenA)) == 100);
+        assert(aori.balanceOf(TAKER_WALLET, address(tokenB)) == 0);
+        assert(aori.balanceOf(SERVER_WALLET, address(tokenA)) == 3);
+        assert(aori.balanceOf(SERVER_WALLET, address(tokenB)) == 2);
+    }
 }

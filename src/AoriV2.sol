@@ -233,21 +233,20 @@ contract AoriV2 is IAoriV2 {
             );
         }
 
+        // Settler processing
+        // Whoever settles the order gets to keep any excess
+        if (matching.makerOrder.inputAmount > matching.takerOrder.outputAmount) {
+            balances[msg.sender][matching.takerOrder.outputToken] += matching.makerOrder.inputAmount - matching.takerOrder.outputAmount;
+        }
+
+        if (adjustedWithoutFee(matching.takerOrder.inputAmount) > matching.makerOrder.outputAmount) {
+            balances[msg.sender][matching.makerOrder.outputToken] += adjustedWithoutFee(matching.takerOrder.inputAmount) - matching.makerOrder.outputAmount;
+        }
+
         // After-Aori-Trade Hook
         if (matching.makerOrder.offerer.code.length > 0 && IERC165(matching.makerOrder.offerer).supportsInterface(IAoriHook.afterAoriTrade.selector)) {
             (bool success) = IAoriHook(matching.makerOrder.offerer).afterAoriTrade(matching, hookData);
             require(success, "AfterAoriTrade hook failed");
-        }
-
-        // Settler processing
-
-        // Whoever settles the order gets to keep any excess
-        if (matching.takerOrder.outputAmount > matching.makerOrder.inputAmount) {
-            balances[tx.origin][matching.takerOrder.outputToken] += matching.takerOrder.outputAmount - matching.makerOrder.inputAmount;
-        }
-
-        if (matching.makerOrder.outputAmount > adjustedWithoutFee(matching.takerOrder.inputAmount)) {
-            balances[tx.origin][matching.makerOrder.outputToken] += matching.makerOrder.outputAmount - adjustedWithoutFee(matching.takerOrder.inputAmount);
         }
 
         // Emit event
@@ -346,6 +345,7 @@ contract AoriV2 is IAoriV2 {
     function setTakerFee(uint8 _takerFeeBips, address _takerFeeAddress) external {
         require(msg.sender == serverSigner, "Taker fee address must be server signer");
         require(_takerFeeBips <= 100, "Taker fee bips must be less than 1%");
+        require(_takerFeeAddress != address(0), "Taker fee address must be non-zero");
 
         if (takerFeeBips != _takerFeeBips) {
             takerFeeBips = _takerFeeBips;
