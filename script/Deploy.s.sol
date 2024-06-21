@@ -5,36 +5,35 @@ import "forge-std/Script.sol";
 import {ICREATE3Factory} from "create3-factory/src/ICREATE3Factory.sol";
 import { MultichainDeployScript } from "./MultichainDeploy.s.sol";
 import "../src/AoriV2.sol";
+import "../src/AoriV2Blast.sol";
 
 contract DeployScript is Script, MultichainDeployScript {
     function run() external {
         uint256 deployerPrivateKey = uint256(vm.envBytes32("PRIVATE_KEY"));
         address deployerAddress = vm.addr(deployerPrivateKey);
         bytes memory bytecode = abi.encodePacked(type(AoriV2).creationCode, abi.encode(deployerAddress));
+        bytes memory blastBytecode = abi.encodePacked(type(AoriV2Blast).creationCode, abi.encode(deployerAddress));
 
-        string memory AORI_VERSION = "Aori v2.1";
+        string memory AORI_VERSION = "Aori v2.2";
 
         /*//////////////////////////////////////////////////////////////
                                     TESTNETS
         //////////////////////////////////////////////////////////////*/
 
-        // deployTo("goerli", AORI_VERSION, bytecode);
         // deployTo("sepolia", AORI_VERSION, bytecode);
         // deployTo("arbitrum-sepolia", AORI_VERSION, bytecode);
-        // deployTo("arbitrum", AORI_VERSION, bytecode);
-        // deployTo("mevm-m1", AORI_VERSION, bytecode);
         // deployTo("berachain-artio", AORI_VERSION, bytecode);
 
         /*//////////////////////////////////////////////////////////////
                                     MAINNETS
         //////////////////////////////////////////////////////////////*/
 
-        // deployTo("arbitrum", AORI_VERSION, bytecode);
+        deployTo("arbitrum", AORI_VERSION, bytecode);
         // deployTo("mainnet", AORI_VERSION, bytecode);
-        deployTo("celo", AORI_VERSION, bytecode);
+        // deployTo("celo", AORI_VERSION, bytecode);
         // deployTo("optimism", AORI_VERSION, bytecode);
         // deployTo("polygon", AORI_VERSION, bytecode);
-        // deployTo("blast", AORI_VERSION, bytecode);
+        deployTo("blast", AORI_VERSION, blastBytecode);
         // deployTo("base", AORI_VERSION, bytecode);
         // deployTo("linea", AORI_VERSION, bytecode);
         // deployTo("mantle", AORI_VERSION, bytecode);
