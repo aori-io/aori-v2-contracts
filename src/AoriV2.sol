@@ -264,12 +264,12 @@ contract AoriV2 is IAoriV2 {
         // for them to have native flash-loan-like capabilities.
         if (!matching.makerOrder.toWithdraw) {
             // Add balance
-            balances[matching.makerOrder.offerer][
+            balances[matching.makerOrder.recipient][
                 matching.makerOrder.outputToken
             ] += matching.makerOrder.outputAmount;
         } else {
             IERC20(matching.makerOrder.outputToken).safeTransfer(
-                matching.makerOrder.offerer,
+                matching.makerOrder.recipient,
                 matching.makerOrder.outputAmount
             );
         }
@@ -287,6 +287,7 @@ contract AoriV2 is IAoriV2 {
             require(success, "BeforeAoriTrade hook failed");
         }
 
+        // Subtract from maker's balance
         if (
             balances[matching.makerOrder.offerer][
                 matching.makerOrder.inputToken
@@ -303,13 +304,14 @@ contract AoriV2 is IAoriV2 {
             );
         }
 
+        // Taker receive tokens
         if (!matching.takerOrder.toWithdraw) {
-            balances[matching.takerOrder.offerer][
+            balances[matching.takerOrder.recipient][
                 matching.takerOrder.outputToken
             ] += matching.takerOrder.outputAmount;
         } else {
             IERC20(matching.takerOrder.outputToken).safeTransfer(
-                matching.takerOrder.offerer,
+                matching.takerOrder.recipient,
                 matching.takerOrder.outputAmount
             );
         }
