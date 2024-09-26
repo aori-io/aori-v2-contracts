@@ -142,6 +142,33 @@ contract BaseFixture is DSTest {
             });
     }
 
+    function _generateBaseOrderWithCustomRecipient(
+        address offerer,
+        address inputToken,
+        uint256 inputAmount,
+        address outputToken,
+        uint256 outputAmount,
+        address recipient
+    ) public view returns (IAoriV2.Order memory) {
+        return
+            IAoriV2.Order({
+                offerer: offerer,
+                inputToken: inputToken,
+                inputAmount: inputAmount,
+                outputToken: outputToken,
+                outputAmount: outputAmount,
+                recipient: recipient,
+                // =====
+                zone: address(aori),
+                chainId: uint160(block.chainid),
+                startTime: uint32(block.timestamp),
+                endTime: uint32(block.timestamp + 1000),
+                // =====
+                counter: 0,
+                toWithdraw: false
+            });
+    }
+
     function _signOrder(
         uint256 privateKey,
         IAoriV2.Order memory order
