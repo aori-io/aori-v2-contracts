@@ -104,7 +104,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        makerOrder.startTime = block.timestamp + 10000;
+        makerOrder.startTime = uint32(block.timestamp + 10000);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -133,7 +133,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        takerOrder.startTime = block.timestamp + 10000;
+        takerOrder.startTime = uint32(block.timestamp + 10000);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -162,7 +162,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        makerOrder.endTime = block.timestamp - 100;
+        makerOrder.endTime = uint32(block.timestamp - 100);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -191,7 +191,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        takerOrder.endTime = block.timestamp - 100;
+        takerOrder.endTime = uint32(block.timestamp - 100);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -259,7 +259,7 @@ contract AoriV2Test is BaseFixture {
         );
     }
 
-    function testSettleOrders_failMakerInputChainIdIsNotCorrect() public {
+    function testSettleOrders_failMakerChainIdIsNotCorrect() public {
         /// Create Orders
         IAoriV2.Order memory makerOrder = _generateBaseOrder(
             MAKER_WALLET,
@@ -276,7 +276,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        makerOrder.inputChainId = block.chainid + 1;
+        makerOrder.chainId = uint160(block.chainid + 1);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -284,11 +284,11 @@ contract AoriV2Test is BaseFixture {
         _settleAoriOrders_expectRevert(
             makerOrder,
             takerOrder,
-            "Maker order's input chainid does not match taker order's output chainid"
+            "Maker order's chainid does not match taker order's chainid"
         );
     }
 
-    function testSettleOrders_failTakerInputChainIdIsNotCorrect() public {
+    function testSettleOrders_failTakerChainIdIsNotCorrect() public {
         /// Create Orders
         IAoriV2.Order memory makerOrder = _generateBaseOrder(
             MAKER_WALLET,
@@ -305,7 +305,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        takerOrder.inputChainId = block.chainid + 1;
+        takerOrder.chainId = uint160(block.chainid + 1);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -313,7 +313,7 @@ contract AoriV2Test is BaseFixture {
         _settleAoriOrders_expectRevert(
             makerOrder,
             takerOrder,
-            "Taker order's input chainid does not match maker order's output chainid"
+            "Maker order's chainid does not match taker order's chainid"
         );
     }
 
@@ -334,7 +334,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        makerOrder.inputZone = address(0x0);
+        makerOrder.zone = address(0x0);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -342,7 +342,7 @@ contract AoriV2Test is BaseFixture {
         _settleAoriOrders_expectRevert(
             makerOrder,
             takerOrder,
-            "Maker order's input zone does not match taker order's output zone"
+            "Maker order's zone does not match taker order's zone"
         );
     }
 
@@ -363,7 +363,7 @@ contract AoriV2Test is BaseFixture {
             100
         );
         /// Order Edits
-        takerOrder.inputZone = address(0x0);
+        takerOrder.zone = address(0x0);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -371,7 +371,7 @@ contract AoriV2Test is BaseFixture {
         _settleAoriOrders_expectRevert(
             makerOrder,
             takerOrder,
-            "Taker order's input zone does not match maker order's output zone"
+            "Maker order's zone does not match taker order's zone"
         );
     }
 
@@ -413,7 +413,6 @@ contract AoriV2Test is BaseFixture {
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
             feeTag: "aori",
             feeRecipient: address(0)
         });
@@ -461,7 +460,6 @@ contract AoriV2Test is BaseFixture {
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
             feeTag: "aori",
             feeRecipient: address(0)
         });
@@ -625,39 +623,6 @@ contract AoriV2Test is BaseFixture {
         );
     }
 
-    function testSettleOrders_failBlockDeadlineHasPassed() public {
-        /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(
-            MAKER_WALLET,
-            address(tokenA),
-            100,
-            address(tokenB),
-            100
-        );
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(
-            TAKER_WALLET,
-            address(tokenB),
-            100,
-            address(tokenA),
-            100
-        );
-
-        /// Prepare
-        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
-        _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
-
-        /// Settle
-        (IAoriV2.MatchingDetails memory matching, , , ) = _createBaseMatching(
-            makerOrder,
-            takerOrder
-        );
-        matching.blockDeadline = block.number - 1;
-        _settleAoriMatching_expectRevert(
-            matching,
-            "Order execution deadline has passed"
-        );
-    }
-
     function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByMakerOrder()
         public
     {
@@ -699,7 +664,6 @@ contract AoriV2Test is BaseFixture {
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
             feeTag: "aori",
             feeRecipient: address(0)
         });
@@ -750,70 +714,12 @@ contract AoriV2Test is BaseFixture {
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
             feeTag: "aori",
             feeRecipient: address(0)
         });
         _settleAoriMatching_expectRevert(
             matching,
             "Taker signature does not correspond to order details"
-        );
-    }
-
-    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByBlockDeadline()
-        public
-    {
-        /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(
-            MAKER_WALLET,
-            address(tokenA),
-            100,
-            address(tokenB),
-            100
-        );
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(
-            TAKER_WALLET,
-            address(tokenB),
-            100,
-            address(tokenA),
-            100
-        );
-
-        /// Prepare
-        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
-        _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
-
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
-            MAKER_PRIVATE_KEY,
-            makerOrder
-        );
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
-            TAKER_PRIVATE_KEY,
-            takerOrder
-        );
-
-        IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
-            makerOrder: makerOrder,
-            takerOrder: takerOrder,
-            makerSignature: abi.encodePacked(makerR, makerS, makerV),
-            takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
-            feeTag: "aori",
-            feeRecipient: address(0)
-        });
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
-            SERVER_PRIVATE_KEY,
-            matching
-        );
-
-        /// Settle
-        matching.blockDeadline = block.number + 5;
-        _settleAoriMatchingWithSignature_expectRevert(
-            matching,
-            serverV,
-            serverR,
-            serverS,
-            "Server signature does not correspond to order details"
         );
     }
 
@@ -854,7 +760,6 @@ contract AoriV2Test is BaseFixture {
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
             feeTag: "aori",
             feeRecipient: address(0)
         });
@@ -911,7 +816,6 @@ contract AoriV2Test is BaseFixture {
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
             feeTag: "aori",
             feeRecipient: address(0)
         });

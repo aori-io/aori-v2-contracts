@@ -128,16 +128,16 @@ contract BaseFixture is DSTest {
                 offerer: offerer,
                 inputToken: inputToken,
                 inputAmount: inputAmount,
-                inputZone: address(aori),
                 outputToken: outputToken,
                 outputAmount: outputAmount,
-                outputZone: address(aori),
-                startTime: block.timestamp,
-                endTime: block.timestamp + 1000,
-                salt: 0,
+                recipient: offerer,
+                // =====
+                zone: address(aori),
+                chainId: uint160(block.chainid),
+                startTime: uint32(block.timestamp),
+                endTime: uint32(block.timestamp + 1000),
+                // =====
                 counter: 0,
-                inputChainId: block.chainid,
-                outputChainId: block.chainid,
                 toWithdraw: false
             });
     }
@@ -176,7 +176,6 @@ contract BaseFixture is DSTest {
                 takerOrder: takerOrder,
                 makerSignature: abi.encodePacked(makerR, makerS, makerV),
                 takerSignature: abi.encodePacked(takerR, takerS, takerV),
-                blockDeadline: block.number + 100,
                 feeTag: "aori",
                 feeRecipient: SERVER_WALLET
             });
@@ -247,7 +246,6 @@ contract BaseFixture is DSTest {
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
             feeTag: "aori",
             feeRecipient: SERVER_WALLET
         });

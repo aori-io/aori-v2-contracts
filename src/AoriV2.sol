@@ -114,42 +114,23 @@ contract AoriV2 is IAoriV2 {
         // And the chainId is the set chainId for the order such that
         // we can protect against cross-chain signature replay attacks.
         require(
-            matching.makerOrder.inputChainId ==
-                matching.takerOrder.outputChainId,
-            "Maker order's input chainid does not match taker order's output chainid"
+            matching.makerOrder.chainId == matching.takerOrder.chainId,
+            "Maker order's chainid does not match taker order's chainid"
         );
+
         require(
-            matching.takerOrder.inputChainId ==
-                matching.makerOrder.outputChainId,
-            "Taker order's input chainid does not match maker order's output chainid"
+            matching.makerOrder.chainId == block.chainid,
+            "Order's chainid does not match current chainid"
         );
 
         // Check zone
         require(
-            matching.makerOrder.inputZone == matching.takerOrder.outputZone,
-            "Maker order's input zone does not match taker order's output zone"
+            matching.makerOrder.zone == matching.takerOrder.zone,
+            "Maker order's zone does not match taker order's zone"
         );
         require(
-            matching.takerOrder.inputZone == matching.makerOrder.outputZone,
-            "Taker order's input zone does not match maker order's output zone"
-        );
-
-        // Single-chained orders via this contract
-        require(
-            matching.makerOrder.inputChainId == block.chainid,
-            "Maker order's input chainid does not match current chainid"
-        );
-        require(
-            matching.takerOrder.inputChainId == block.chainid,
-            "Taker order's input chainid does not match current chainid"
-        );
-        require(
-            matching.makerOrder.inputZone == address(this),
-            "Maker order's input zone does not match this contract"
-        );
-        require(
-            matching.takerOrder.inputZone == address(this),
-            "Taker order's input zone does not match this contract"
+            matching.makerOrder.zone == address(this),
+            "Zone does not match this contract"
         );
 
         // Compute order hashes of both orders
@@ -226,12 +207,6 @@ contract AoriV2 is IAoriV2 {
         /*//////////////////////////////////////////////////////////////
                               MATCHING VALIDATION
         //////////////////////////////////////////////////////////////*/
-
-        // Ensure that block deadline to execute has not passed
-        require(
-            matching.blockDeadline >= block.number,
-            "Order execution deadline has passed"
-        );
 
         (
             uint8 serverV,
@@ -385,14 +360,12 @@ contract AoriV2 is IAoriV2 {
             takerHash, // takerHash
             matching.makerOrder.offerer, // maker
             matching.takerOrder.offerer, // taker
-            matching.makerOrder.inputChainId, // inputChainId
-            matching.makerOrder.outputChainId, // outputChainId
-            matching.makerOrder.inputZone, // inputZone
-            matching.makerOrder.outputZone, // outputZone
             matching.makerOrder.inputToken, // inputToken
             matching.makerOrder.outputToken, // outputToken
             matching.makerOrder.inputAmount, // inputAmount
             matching.makerOrder.outputAmount, // outputAmount
+            matching.makerOrder.zone, // zone
+            matching.makerOrder.chainId, // chainId
             getMatchingHash(matching)
         );
     }
@@ -471,7 +444,8 @@ contract AoriV2 is IAoriV2 {
 
     /// @notice Increment the counter of the sender. Note that this is
     ///         counter is not exactly a sequence number. It is a
-    ///         counter that is incremented to denote
+    ///         counter that is incremented to denote the current cancel
+    ///         index of the sender. e.g see https://support.opensea.io/en/articles/8867010-how-can-i-manage-my-offers
     function incrementCounter() external {
         addressCounter[msg.sender] += 1;
     }
@@ -523,15 +497,15 @@ contract AoriV2 is IAoriV2 {
                 order.offerer,
                 order.inputToken,
                 order.inputAmount,
-                order.inputChainId,
-                order.inputZone,
                 order.outputToken,
                 order.outputAmount,
-                order.outputChainId,
-                order.outputZone,
+                order.recipient,
+                // =====
+                order.zone,
+                order.chainId,
                 order.startTime,
                 order.endTime,
-                order.salt,
+                // =====
                 order.counter,
                 order.toWithdraw
             )
@@ -545,7 +519,7 @@ contract AoriV2 is IAoriV2 {
             abi.encodePacked(
                 matching.makerSignature,
                 matching.takerSignature,
-                matching.blockDeadline,
+                // =====
                 matching.feeTag,
                 matching.feeRecipient
             )

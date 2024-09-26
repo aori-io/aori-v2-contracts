@@ -9,26 +9,26 @@ interface IAoriV2 {
         address offerer;
         address inputToken;
         uint256 inputAmount;
-        uint256 inputChainId;
-        address inputZone;
         address outputToken;
         uint256 outputAmount;
-        uint256 outputChainId;
-        address outputZone;
-        uint256 startTime;
-        uint256 endTime;
-        uint256 salt;
-        uint256 counter;
+        address recipient;
+        // =====
+        address zone;
+        uint160 chainId;
+        uint32 startTime;
+        uint32 endTime;
+        // =====
+        uint32 counter;
         bool toWithdraw;
     }
 
     struct MatchingDetails {
         Order makerOrder;
         Order takerOrder;
+        // =====
         bytes makerSignature;
         bytes takerSignature;
-        uint256 blockDeadline;
-        // Fee
+        // =====
         string feeTag;
         address feeRecipient;
     }
@@ -51,14 +51,12 @@ interface IAoriV2 {
         bytes32 indexed takerHash,
         address maker,
         address taker,
-        uint256 inputChainId,
-        uint256 outputChainId,
-        address inputZone,
-        address outputZone,
         address inputToken,
         address outputToken,
         uint256 inputAmount,
         uint256 outputAmount,
+        address zone,
+        uint160 chainId,
         bytes32 matchingHash
     );
 
