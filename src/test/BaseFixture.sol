@@ -222,9 +222,7 @@ contract BaseFixture is DSTest {
 
     function _createBaseMatching(
         IAoriV2.Order memory makerOrder,
-        IAoriV2.Order memory takerOrder,
-        address seatHolder,
-        uint256 seatPercentOfFees
+        IAoriV2.Order memory takerOrder
     )
         public
         view

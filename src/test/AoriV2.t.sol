@@ -649,9 +649,7 @@ contract AoriV2Test is BaseFixture {
         /// Settle
         (IAoriV2.MatchingDetails memory matching, , , ) = _createBaseMatching(
             makerOrder,
-            takerOrder,
-            TAKER_WALLET,
-            0
+            takerOrder
         );
         matching.blockDeadline = block.number - 1;
         _settleAoriMatching_expectRevert(
