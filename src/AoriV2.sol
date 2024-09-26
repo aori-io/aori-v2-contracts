@@ -75,8 +75,7 @@ contract AoriV2 is IAoriV2 {
     function settleOrders(
         MatchingDetails calldata matching,
         bytes calldata serverSignature,
-        bytes calldata hookData,
-        bytes calldata options
+        bytes calldata hookData
     ) external payable {
         /*//////////////////////////////////////////////////////////////
                            SPECIFIC ORDER VALIDATION
@@ -210,8 +209,7 @@ contract AoriV2 is IAoriV2 {
             "Taker order output amount is more than maker order input amount"
         );
         require(
-            matching.makerOrder.outputAmount <=
-                adjustedWithFee(matching.takerOrder.inputAmount),
+            matching.makerOrder.outputAmount <= matching.takerOrder.inputAmount,
             "Maker order output amount is more than taker order input amount"
         );
 
@@ -268,6 +266,7 @@ contract AoriV2 is IAoriV2 {
         BitMaps.set(orderStatus, uint256(takerHash));
 
         // (Taker ==> Maker) processing
+        // Either subtract from in-contract balance or transfer from taker's wallet
         if (
             balances[matching.takerOrder.offerer][
                 matching.takerOrder.inputToken
@@ -298,22 +297,6 @@ contract AoriV2 is IAoriV2 {
                 matching.makerOrder.offerer,
                 matching.makerOrder.outputAmount
             );
-        }
-
-        // Fee calculation
-        if (takerFeeBips != 0) {
-            // Apply fees
-            balances[takerFeeAddress][matching.takerOrder.inputToken] +=
-                (adjustedTakerFee(matching.takerOrder.inputAmount) *
-                    (100 - matching.seatPercentOfFees)) /
-                100;
-
-            if (matching.seatPercentOfFees != 0) {
-                balances[matching.seatHolder][matching.takerOrder.inputToken] +=
-                    (adjustedTakerFee(matching.takerOrder.inputAmount) *
-                        matching.seatPercentOfFees) /
-                    100;
-            }
         }
 
         // (Maker ==> Taker) processing
@@ -356,24 +339,33 @@ contract AoriV2 is IAoriV2 {
             );
         }
 
-        // Settler processing
-        // Whoever settles the order gets to keep any excess
+        // Fee processing
+        // The fee recipient keeps any excess
         if (
             matching.makerOrder.inputAmount > matching.takerOrder.outputAmount
         ) {
-            balances[msg.sender][matching.takerOrder.outputToken] +=
+            balances[matching.feeRecipient][matching.takerOrder.outputToken] +=
                 matching.makerOrder.inputAmount -
                 matching.takerOrder.outputAmount;
         }
 
         if (
-            adjustedWithoutFee(matching.takerOrder.inputAmount) >
-            matching.makerOrder.outputAmount
+            matching.takerOrder.inputAmount > matching.makerOrder.outputAmount
         ) {
-            balances[msg.sender][matching.makerOrder.outputToken] +=
-                adjustedWithoutFee(matching.takerOrder.inputAmount) -
+            balances[matching.feeRecipient][matching.makerOrder.outputToken] +=
+                matching.takerOrder.inputAmount -
                 matching.makerOrder.outputAmount;
         }
+
+        // Emit
+        emit FeeReceived(
+            matching.feeRecipient,
+            matching.feeTag,
+            matching.makerOrder.inputToken,
+            matching.makerOrder.inputAmount - matching.takerOrder.outputAmount,
+            matching.makerOrder.outputToken,
+            matching.takerOrder.inputAmount - matching.makerOrder.outputAmount
+        );
 
         // After-Aori-Trade Hook
         if (
@@ -489,53 +481,6 @@ contract AoriV2 is IAoriV2 {
     }
 
     /*//////////////////////////////////////////////////////////////
-                               TAKER FEE
-    //////////////////////////////////////////////////////////////*/
-
-    /// @notice Set the taker fee address and bips
-    /// @dev Can only be called by the server signer
-    function setTakerFee(
-        uint8 _takerFeeBips,
-        address _takerFeeAddress
-    ) external {
-        require(
-            msg.sender == serverSigner,
-            "Taker fee address must be server signer"
-        );
-        require(_takerFeeBips <= 100, "Taker fee bips must be less than 1%");
-        require(
-            _takerFeeAddress != address(0),
-            "Taker fee address must be non-zero"
-        );
-
-        if (takerFeeBips != _takerFeeBips) {
-            takerFeeBips = _takerFeeBips;
-        }
-
-        if (takerFeeAddress != _takerFeeAddress) {
-            takerFeeAddress = _takerFeeAddress;
-        }
-    }
-
-    function adjustedWithFee(
-        uint256 _amount
-    ) internal view returns (uint256 amountWithFee) {
-        amountWithFee = (_amount * (10000 + takerFeeBips)) / 10000;
-    }
-
-    function adjustedWithoutFee(
-        uint256 _amountWithFee
-    ) internal view returns (uint256 amountWithoutFee) {
-        amountWithoutFee = (_amountWithFee * 10000) / (10000 + takerFeeBips);
-    }
-
-    function adjustedTakerFee(
-        uint256 _amount
-    ) internal view returns (uint256 totalTakerFee) {
-        totalTakerFee = _amount * takerFeeBips;
-    }
-
-    /*//////////////////////////////////////////////////////////////
                              VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
@@ -601,9 +546,8 @@ contract AoriV2 is IAoriV2 {
                 matching.makerSignature,
                 matching.takerSignature,
                 matching.blockDeadline,
-                matching.seatNumber,
-                matching.seatHolder,
-                matching.seatPercentOfFees
+                matching.feeTag,
+                matching.feeRecipient
             )
         );
     }

@@ -15,15 +15,14 @@ import {SimpleFlashLoanReceiver} from "./mocks/flashloan/SimpleFlashLoanReceiver
 import {RevertingFlashLoanReceiver} from "./mocks/flashloan/RevertingFlashLoanReceiver.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
-import { AoriV2 } from "../AoriV2.sol";
-import { IAoriV2 } from "../interfaces/IAoriV2.sol";
+import {AoriV2} from "../AoriV2.sol";
+import {IAoriV2} from "../interfaces/IAoriV2.sol";
 
 interface IERC20Mintable is IERC20 {
     function mint(uint256 amount) external;
 }
 
 contract BaseFixture is DSTest {
-
     /*//////////////////////////////////////////////////////////////
                              TEST UTILITIES
     //////////////////////////////////////////////////////////////*/
@@ -117,26 +116,36 @@ contract BaseFixture is DSTest {
                                 HELPERS
     //////////////////////////////////////////////////////////////*/
 
-    function _generateBaseOrder(address offerer, address inputToken, uint256 inputAmount, address outputToken, uint256 outputAmount) public view returns (IAoriV2.Order memory) {
-        return IAoriV2.Order({
-            offerer: offerer,
-            inputToken: inputToken,
-            inputAmount: inputAmount,
-            inputZone: address(aori),
-            outputToken: outputToken,
-            outputAmount: outputAmount,
-            outputZone: address(aori),
-            startTime: block.timestamp,
-            endTime: block.timestamp + 1000,
-            salt: 0,
-            counter: 0,
-            inputChainId: block.chainid,
-            outputChainId: block.chainid,
-            toWithdraw: false
-        });
+    function _generateBaseOrder(
+        address offerer,
+        address inputToken,
+        uint256 inputAmount,
+        address outputToken,
+        uint256 outputAmount
+    ) public view returns (IAoriV2.Order memory) {
+        return
+            IAoriV2.Order({
+                offerer: offerer,
+                inputToken: inputToken,
+                inputAmount: inputAmount,
+                inputZone: address(aori),
+                outputToken: outputToken,
+                outputAmount: outputAmount,
+                outputZone: address(aori),
+                startTime: block.timestamp,
+                endTime: block.timestamp + 1000,
+                salt: 0,
+                counter: 0,
+                inputChainId: block.chainid,
+                outputChainId: block.chainid,
+                toWithdraw: false
+            });
     }
 
-    function _signOrder(uint256 privateKey, IAoriV2.Order memory order) public view returns (uint8 v, bytes32 r, bytes32 s) {
+    function _signOrder(
+        uint256 privateKey,
+        IAoriV2.Order memory order
+    ) public view returns (uint8 v, bytes32 r, bytes32 s) {
         (v, r, s) = vm.sign(
             privateKey,
             keccak256(
@@ -148,23 +157,35 @@ contract BaseFixture is DSTest {
         );
     }
 
-    function _generateBaseMatching(IAoriV2.Order memory makerOrder, IAoriV2.Order memory takerOrder) public view returns (IAoriV2.MatchingDetails memory) {
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+    function _generateBaseMatching(
+        IAoriV2.Order memory makerOrder,
+        IAoriV2.Order memory takerOrder
+    ) public view returns (IAoriV2.MatchingDetails memory) {
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
-        return IAoriV2.MatchingDetails({
-            makerOrder: makerOrder,
-            takerOrder: takerOrder,
-            makerSignature: abi.encodePacked(makerR, makerS, makerV),
-            takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
-        });
+        return
+            IAoriV2.MatchingDetails({
+                makerOrder: makerOrder,
+                takerOrder: takerOrder,
+                makerSignature: abi.encodePacked(makerR, makerS, makerV),
+                takerSignature: abi.encodePacked(takerR, takerS, takerV),
+                blockDeadline: block.number + 100,
+                feeTag: "aori",
+                feeRecipient: SERVER_WALLET
+            });
     }
 
-    function _signMatching(uint256 privateKey, IAoriV2.MatchingDetails memory matching) public view returns (uint8 v, bytes32 r, bytes32 s) {
+    function _signMatching(
+        uint256 privateKey,
+        IAoriV2.MatchingDetails memory matching
+    ) public view returns (uint8 v, bytes32 r, bytes32 s) {
         (v, r, s) = vm.sign(
             privateKey,
             keccak256(
@@ -176,14 +197,22 @@ contract BaseFixture is DSTest {
         );
     }
 
-    function _mintApproveAori(address _to, address _token, uint256 _amount) public {
+    function _mintApproveAori(
+        address _to,
+        address _token,
+        uint256 _amount
+    ) public {
         vm.startPrank(_to);
         IERC20Mintable(_token).mint(_amount);
         IERC20(_token).approve(address(aori), _amount);
         vm.stopPrank();
     }
 
-    function _mintApproveDepositAori(address _to, address _token, uint256 _amount) public {
+    function _mintApproveDepositAori(
+        address _to,
+        address _token,
+        uint256 _amount
+    ) public {
         vm.startPrank(_to);
         IERC20Mintable(_token).mint(_amount);
         IERC20(_token).approve(address(aori), _amount);
@@ -196,14 +225,24 @@ contract BaseFixture is DSTest {
         IAoriV2.Order memory takerOrder,
         address seatHolder,
         uint256 seatPercentOfFees
-    ) public view returns (
-        IAoriV2.MatchingDetails memory matching,
-        uint8 serverV,
-        bytes32 serverR,
-        bytes32 serverS
-    ) {
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+    )
+        public
+        view
+        returns (
+            IAoriV2.MatchingDetails memory matching,
+            uint8 serverV,
+            bytes32 serverR,
+            bytes32 serverS
+        )
+    {
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         matching = IAoriV2.MatchingDetails({
             makerOrder: makerOrder,
@@ -211,64 +250,136 @@ contract BaseFixture is DSTest {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: seatHolder,
-            seatPercentOfFees: seatPercentOfFees
+            feeTag: "aori",
+            feeRecipient: SERVER_WALLET
         });
 
-        (serverV, serverR, serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        (serverV, serverR, serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
     }
 
     /*//////////////////////////////////////////////////////////////
                                SETTLEMENT
     //////////////////////////////////////////////////////////////*/
 
-    function _settleAoriOrders_expectRevertEmpty(IAoriV2.Order memory makerOrder, IAoriV2.Order memory takerOrder) public {
+    function _settleAoriOrders_expectRevertEmpty(
+        IAoriV2.Order memory makerOrder,
+        IAoriV2.Order memory takerOrder
+    ) public {
         vm.startPrank(SERVER_WALLET);
-        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(makerOrder, takerOrder);
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(
+            makerOrder,
+            takerOrder
+        );
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
         vm.expectRevert();
-        aori.settleOrders(matching, abi.encodePacked(serverR, serverS, serverV), "", "");
+        aori.settleOrders(
+            matching,
+            abi.encodePacked(serverR, serverS, serverV),
+            ""
+        );
         vm.stopPrank();
     }
 
-    function _settleAoriOrders_expectRevert(IAoriV2.Order memory makerOrder, IAoriV2.Order memory takerOrder, bytes memory revertData) public {
+    function _settleAoriOrders_expectRevert(
+        IAoriV2.Order memory makerOrder,
+        IAoriV2.Order memory takerOrder,
+        bytes memory revertData
+    ) public {
         vm.startPrank(SERVER_WALLET);
-        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(makerOrder, takerOrder);
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(
+            makerOrder,
+            takerOrder
+        );
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
         vm.expectRevert(revertData);
-        aori.settleOrders(matching, abi.encodePacked(serverR, serverS, serverV), "", "");
+        aori.settleOrders(
+            matching,
+            abi.encodePacked(serverR, serverS, serverV),
+            ""
+        );
         vm.stopPrank();
     }
 
-    function _settleAoriOrders_successful(IAoriV2.Order memory makerOrder, IAoriV2.Order memory takerOrder) public {
+    function _settleAoriOrders_successful(
+        IAoriV2.Order memory makerOrder,
+        IAoriV2.Order memory takerOrder
+    ) public {
         vm.startPrank(SERVER_WALLET);
-        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(makerOrder, takerOrder);
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
-        aori.settleOrders(matching, abi.encodePacked(serverR, serverS, serverV), "", "");
+        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(
+            makerOrder,
+            takerOrder
+        );
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
+        aori.settleOrders(
+            matching,
+            abi.encodePacked(serverR, serverS, serverV),
+            ""
+        );
         vm.stopPrank();
     }
 
-    function _settleAoriOrders_successfulCustomSettler(address settler, IAoriV2.Order memory makerOrder, IAoriV2.Order memory takerOrder) public {
-        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(makerOrder, takerOrder);
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+    function _settleAoriOrders_successfulCustomSettler(
+        address settler,
+        IAoriV2.Order memory makerOrder,
+        IAoriV2.Order memory takerOrder
+    ) public {
+        IAoriV2.MatchingDetails memory matching = _generateBaseMatching(
+            makerOrder,
+            takerOrder
+        );
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
         vm.startPrank(settler);
-        aori.settleOrders(matching, abi.encodePacked(serverR, serverS, serverV), "", "");
+        aori.settleOrders(
+            matching,
+            abi.encodePacked(serverR, serverS, serverV),
+            ""
+        );
         vm.stopPrank();
     }
 
-    function _settleAoriMatching_expectRevert(IAoriV2.MatchingDetails memory matching, bytes memory revertData) public {
+    function _settleAoriMatching_expectRevert(
+        IAoriV2.MatchingDetails memory matching,
+        bytes memory revertData
+    ) public {
         vm.startPrank(SERVER_WALLET);
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
         vm.expectRevert(revertData);
-        aori.settleOrders(matching, abi.encodePacked(serverR, serverS, serverV), "", "");
+        aori.settleOrders(
+            matching,
+            abi.encodePacked(serverR, serverS, serverV),
+            ""
+        );
         vm.stopPrank();
     }
 
-    function _settleAoriMatchingWithSignature_expectRevert(IAoriV2.MatchingDetails memory matching, uint8 v, bytes32 r, bytes32 s, bytes memory revertData) public {
+    function _settleAoriMatchingWithSignature_expectRevert(
+        IAoriV2.MatchingDetails memory matching,
+        uint8 v,
+        bytes32 r,
+        bytes32 s,
+        bytes memory revertData
+    ) public {
         vm.startPrank(SERVER_WALLET);
         vm.expectRevert(revertData);
-        aori.settleOrders(matching, abi.encodePacked(r, s, v), "", "");
+        aori.settleOrders(matching, abi.encodePacked(r, s, v), "");
         vm.stopPrank();
     }
 

@@ -8,16 +8,15 @@ import {Vm} from "forge-std/Vm.sol";
 import {SimpleToken} from "./mocks/SimpleToken.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
-import { AoriV2 } from "../AoriV2.sol";
-import { BaseFixture } from "./BaseFixture.sol";
-import { IAoriV2 } from "../interfaces/IAoriV2.sol";
+import {AoriV2} from "../AoriV2.sol";
+import {BaseFixture} from "./BaseFixture.sol";
+import {IAoriV2} from "../interfaces/IAoriV2.sol";
 
 interface IERC20Mintable is IERC20 {
     function mint(uint256 amount) external;
 }
 
 contract AoriV2Test is BaseFixture {
-
     /*//////////////////////////////////////////////////////////////
                                 DEPOSIT
     //////////////////////////////////////////////////////////////*/
@@ -90,139 +89,319 @@ contract AoriV2Test is BaseFixture {
 
     function testSettleOrders_failMakerStartTimeInFuture() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         makerOrder.startTime = block.timestamp + 10000;
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Maker order start time is in the future");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Maker order start time is in the future"
+        );
     }
 
     function testSettleOrders_failTakerStartTimeInFuture() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         takerOrder.startTime = block.timestamp + 10000;
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Taker order start time is in the future");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Taker order start time is in the future"
+        );
     }
 
     function testSettleOrders_failMakerEndTimeAlreadySurpassed() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         makerOrder.endTime = block.timestamp - 100;
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Maker order end time has already passed");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Maker order end time has already passed"
+        );
     }
 
     function testSettleOrders_failTakerEndTimeAlreadySurpassed() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         takerOrder.endTime = block.timestamp - 100;
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Taker order end time has already passed");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Taker order end time has already passed"
+        );
     }
 
     function testSettleOrders_failMakerCounterTooOld() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         _incrementCounter(MAKER_WALLET);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Counter of maker order is too low");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Counter of maker order is too low"
+        );
     }
 
     function testSettleOrders_failTakerCounterTooOld() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         _incrementCounter(TAKER_WALLET);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Counter of taker order is too low");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Counter of taker order is too low"
+        );
     }
 
     function testSettleOrders_failMakerInputChainIdIsNotCorrect() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         makerOrder.inputChainId = block.chainid + 1;
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Maker order's input chainid does not match taker order's output chainid");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Maker order's input chainid does not match taker order's output chainid"
+        );
     }
 
     function testSettleOrders_failTakerInputChainIdIsNotCorrect() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         takerOrder.inputChainId = block.chainid + 1;
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Taker order's input chainid does not match maker order's output chainid");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Taker order's input chainid does not match maker order's output chainid"
+        );
     }
 
     function testSettleOrders_failMakerZoneIsNotCorrect() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         makerOrder.inputZone = address(0x0);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Maker order's input zone does not match taker order's output zone");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Maker order's input zone does not match taker order's output zone"
+        );
     }
 
     function testSettleOrders_failTakerZoneIsNotCorrect() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Order Edits
         takerOrder.inputZone = address(0x0);
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Taker order's input zone does not match maker order's output zone");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Taker order's input zone does not match maker order's output zone"
+        );
     }
 
-    function testSettleOrders_failMakerSignatureDoesNotCorrespondToOrderDetails() public {
+    function testSettleOrders_failMakerSignatureDoesNotCorrespondToOrderDetails()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(FAKE_MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            FAKE_MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
@@ -235,20 +414,42 @@ contract AoriV2Test is BaseFixture {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
+            feeTag: "aori",
+            feeRecipient: address(0)
         });
-        _settleAoriMatching_expectRevert(matching, "Maker signature does not correspond to order details");
+        _settleAoriMatching_expectRevert(
+            matching,
+            "Maker signature does not correspond to order details"
+        );
     }
 
-    function testSettleOrders_failTakerSignatureDoesNotCorrespondToOrderDetails() public {
-         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+    function testSettleOrders_failTakerSignatureDoesNotCorrespondToOrderDetails()
+        public
+    {
+        /// Create Orders
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(FAKE_TAKER_PRIVATE_KEY, takerOrder);
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            FAKE_TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
@@ -261,39 +462,89 @@ contract AoriV2Test is BaseFixture {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
+            feeTag: "aori",
+            feeRecipient: address(0)
         });
-        _settleAoriMatching_expectRevert(matching, "Taker signature does not correspond to order details");
+        _settleAoriMatching_expectRevert(
+            matching,
+            "Taker signature does not correspond to order details"
+        );
     }
 
-    function testSettleOrders_failTakerOutputAmountLessThanMakerInputAmount() public {
+    function testSettleOrders_failTakerOutputAmountLessThanMakerInputAmount()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 101);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            101
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Taker order output amount is more than maker order input amount");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Taker order output amount is more than maker order input amount"
+        );
     }
 
-    function testSettleOrders_failMakerOutputAmountLessThanTakerInputAmount() public {
+    function testSettleOrders_failMakerOutputAmountLessThanTakerInputAmount()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 101);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            101
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Maker order output amount is more than taker order input amount");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Maker order output amount is more than taker order input amount"
+        );
     }
 
     function testSettleOrders_failMakerHashHasAlreadyBeenSettled() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -301,19 +552,47 @@ contract AoriV2Test is BaseFixture {
         _settleAoriOrders_successful(makerOrder, takerOrder);
 
         /// Create Orders
-        makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 99);
+        makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            99
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Maker order has been settled");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Maker order has been settled"
+        );
     }
 
     function testSettleOrders_failTakerHashHasAlreadyBeenSettled() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -321,41 +600,97 @@ contract AoriV2Test is BaseFixture {
         _settleAoriOrders_successful(makerOrder, takerOrder);
 
         /// Create Orders
-        makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 99);
-        takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            99
+        );
+        takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
         /// Settle
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Taker order has been settled");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Taker order has been settled"
+        );
     }
 
     function testSettleOrders_failBlockDeadlineHasPassed() public {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
         /// Settle
-        (IAoriV2.MatchingDetails memory matching,,,) = _createBaseMatching(makerOrder, takerOrder, TAKER_WALLET, 0);
+        (IAoriV2.MatchingDetails memory matching, , , ) = _createBaseMatching(
+            makerOrder,
+            takerOrder,
+            TAKER_WALLET,
+            0
+        );
         matching.blockDeadline = block.number - 1;
-        _settleAoriMatching_expectRevert(matching, "Order execution deadline has passed");
+        _settleAoriMatching_expectRevert(
+            matching,
+            "Order execution deadline has passed"
+        );
     }
 
-    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByMakerOrder() public {
+    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByMakerOrder()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         /// Order Edits
         makerOrder.inputAmount = 99;
@@ -367,24 +702,46 @@ contract AoriV2Test is BaseFixture {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
+            feeTag: "aori",
+            feeRecipient: address(0)
         });
-        _settleAoriMatching_expectRevert(matching, "Maker signature does not correspond to order details");
+        _settleAoriMatching_expectRevert(
+            matching,
+            "Maker signature does not correspond to order details"
+        );
     }
 
-    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByTakerOrder() public {
+    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByTakerOrder()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         /// Order Edits
         takerOrder.inputAmount = 99;
@@ -396,24 +753,46 @@ contract AoriV2Test is BaseFixture {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
+            feeTag: "aori",
+            feeRecipient: address(0)
         });
-        _settleAoriMatching_expectRevert(matching, "Taker signature does not correspond to order details");
+        _settleAoriMatching_expectRevert(
+            matching,
+            "Taker signature does not correspond to order details"
+        );
     }
 
-    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByBlockDeadline() public {
+    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByBlockDeadline()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
             makerOrder: makerOrder,
@@ -421,29 +800,56 @@ contract AoriV2Test is BaseFixture {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
+            feeTag: "aori",
+            feeRecipient: address(0)
         });
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
 
         /// Settle
         matching.blockDeadline = block.number + 5;
-        _settleAoriMatchingWithSignature_expectRevert(matching, serverV, serverR, serverS, "Server signature does not correspond to order details");
+        _settleAoriMatchingWithSignature_expectRevert(
+            matching,
+            serverV,
+            serverR,
+            serverS,
+            "Server signature does not correspond to order details"
+        );
     }
 
-    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsBySeatNumber() public {
+    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByFeeTag()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
             makerOrder: makerOrder,
@@ -451,28 +857,56 @@ contract AoriV2Test is BaseFixture {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
+            feeTag: "aori",
+            feeRecipient: address(0)
         });
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
 
         // Edits
-        matching.seatNumber = 1;
-        _settleAoriMatchingWithSignature_expectRevert(matching, serverV, serverR, serverS, "Server signature does not correspond to order details");
+        matching.feeTag = "aori2";
+        _settleAoriMatchingWithSignature_expectRevert(
+            matching,
+            serverV,
+            serverR,
+            serverS,
+            "Server signature does not correspond to order details"
+        );
     }
 
-    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsBySeatHolder() public {
+    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsByFeeRecipient()
+        public
+    {
         /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
+        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(
+            MAKER_PRIVATE_KEY,
+            makerOrder
+        );
+        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(
+            TAKER_PRIVATE_KEY,
+            takerOrder
+        );
 
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
             makerOrder: makerOrder,
@@ -480,49 +914,40 @@ contract AoriV2Test is BaseFixture {
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
             takerSignature: abi.encodePacked(takerR, takerS, takerV),
             blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
+            feeTag: "aori",
+            feeRecipient: address(0)
         });
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
+        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(
+            SERVER_PRIVATE_KEY,
+            matching
+        );
 
         // Edits
-        matching.seatHolder = FAKE_TAKER_WALLET;
-        _settleAoriMatchingWithSignature_expectRevert(matching, serverV, serverR, serverS, "Server signature does not correspond to order details");
-    }
-
-    function testSettleOrders_failServerSignatureDoesNotCorrespondToOrderDetailsBySeatPercentOfFees() public {
-        /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
-
-        /// Prepare
-        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
-        _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
-
-        (uint8 makerV, bytes32 makerR, bytes32 makerS) = _signOrder(MAKER_PRIVATE_KEY, makerOrder);
-        (uint8 takerV, bytes32 takerR, bytes32 takerS) = _signOrder(TAKER_PRIVATE_KEY, takerOrder);
-
-        IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
-            makerOrder: makerOrder,
-            takerOrder: takerOrder,
-            makerSignature: abi.encodePacked(makerR, makerS, makerV),
-            takerSignature: abi.encodePacked(takerR, takerS, takerV),
-            blockDeadline: block.number + 100,
-            seatNumber: 0,
-            seatHolder: TAKER_WALLET,
-            seatPercentOfFees: 0
-        });
-        (uint8 serverV, bytes32 serverR, bytes32 serverS) = _signMatching(SERVER_PRIVATE_KEY, matching);
-
-        // Edits
-        matching.seatPercentOfFees = 5;
-        _settleAoriMatchingWithSignature_expectRevert(matching, serverV, serverR, serverS, "Server signature does not correspond to order details");
+        matching.feeRecipient = FAKE_TAKER_WALLET;
+        _settleAoriMatchingWithSignature_expectRevert(
+            matching,
+            serverV,
+            serverR,
+            serverS,
+            "Server signature does not correspond to order details"
+        );
     }
 
     function testSettleOrder_successSimpleInternalSwap() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -531,8 +956,20 @@ contract AoriV2Test is BaseFixture {
     }
 
     function testSettleOrder_successSimpleTakerInternalSwap() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         makerOrder.toWithdraw = true;
 
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
@@ -542,8 +979,20 @@ contract AoriV2Test is BaseFixture {
     }
 
     function testSettleOrder_successSimpleMakerInternalSwap() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         takerOrder.toWithdraw = true;
 
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
@@ -553,8 +1002,20 @@ contract AoriV2Test is BaseFixture {
     }
 
     function testSettleOrder_successSimpleExternalSwap() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         makerOrder.toWithdraw = true;
         takerOrder.toWithdraw = true;
 
@@ -584,8 +1045,20 @@ contract AoriV2Test is BaseFixture {
     //////////////////////////////////////////////////////////////*/
 
     function testSettleOrder_successSimpleExternalSwapWithSimpleHook() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(address(simpleHook), address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            address(simpleHook),
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         _mintApproveAori(address(simpleHook), address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -595,28 +1068,76 @@ contract AoriV2Test is BaseFixture {
     }
 
     function testSettleOrder_failSimpleExternalSwapWithFailingHook() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(address(failingHook), address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            address(failingHook),
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         _mintApproveAori(address(failingHook), address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "BeforeAoriTrade hook failed");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "BeforeAoriTrade hook failed"
+        );
     }
 
-    function testSettleOrder_failSimpleExternalSwapWithTrickFailingHook() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(address(trickFailingHook), address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+    function testSettleOrder_failSimpleExternalSwapWithTrickFailingHook()
+        public
+    {
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            address(trickFailingHook),
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         _mintApproveAori(address(trickFailingHook), address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "AfterAoriTrade hook failed");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "AfterAoriTrade hook failed"
+        );
     }
 
-    function testSettleOrder_successSimpleExternalSwapWithRevertingHook() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(address(revertHook), address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+    function testSettleOrder_successSimpleExternalSwapWithRevertingHook()
+        public
+    {
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            address(revertHook),
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         _mintApproveAori(address(revertHook), address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
@@ -625,13 +1146,29 @@ contract AoriV2Test is BaseFixture {
     }
 
     function testSettleOrder_failSimpleExternalSwapWithUnauthedHook() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(address(unauthedHook), address(tokenA), 100, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 100, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            address(unauthedHook),
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
 
         _mintApproveAori(address(unauthedHook), address(tokenA), 1 ether);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
 
-        _settleAoriOrders_expectRevert(makerOrder, takerOrder, "Maker signature does not correspond to order details");
+        _settleAoriOrders_expectRevert(
+            makerOrder,
+            takerOrder,
+            "Maker signature does not correspond to order details"
+        );
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -645,10 +1182,16 @@ contract AoriV2Test is BaseFixture {
         vm.stopPrank();
     }
     function testFlashLoan_failReceiveFlashLoanReverts() public {
-        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);   
+        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         vm.startPrank(MAKER_WALLET);
         vm.expectRevert();
-        aori.flashLoan(address(revertFlashloanReceiver), address(tokenA), 100, "", true);
+        aori.flashLoan(
+            address(revertFlashloanReceiver),
+            address(tokenA),
+            100,
+            "",
+            true
+        );
         vm.stopPrank();
     }
 
@@ -656,12 +1199,24 @@ contract AoriV2Test is BaseFixture {
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         vm.startPrank(MAKER_WALLET);
         vm.expectRevert();
-        aori.flashLoan(address(flashloanReceiver), address(tokenA), 100, "", true);
+        aori.flashLoan(
+            address(flashloanReceiver),
+            address(tokenA),
+            100,
+            "",
+            true
+        );
         vm.stopPrank();
     }
     function testFlashLoan_successZeroLiquidity() public {
         vm.startPrank(MAKER_WALLET);
-        aori.flashLoan(address(flashloanReceiver), address(tokenA), 0, "", true);
+        aori.flashLoan(
+            address(flashloanReceiver),
+            address(tokenA),
+            0,
+            "",
+            true
+        );
         vm.stopPrank();
     }
     function testFlashLoan_successNoActionsReceive() public {
@@ -669,9 +1224,19 @@ contract AoriV2Test is BaseFixture {
         vm.prank(address(flashloanReceiver));
         IERC20(address(tokenA)).approve(address(aori), 1 ether);
         vm.startPrank(MAKER_WALLET);
-        assert(aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0);
-        aori.flashLoan(address(flashloanReceiver), address(tokenA), 100, "", true);
-        assert(aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0);
+        assert(
+            aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
+        );
+        aori.flashLoan(
+            address(flashloanReceiver),
+            address(tokenA),
+            100,
+            "",
+            true
+        );
+        assert(
+            aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
+        );
         vm.stopPrank();
     }
 
@@ -680,9 +1245,19 @@ contract AoriV2Test is BaseFixture {
         vm.prank(address(flashloanReceiver));
         IERC20(address(tokenA)).approve(address(aori), 1 ether);
         vm.startPrank(MAKER_WALLET);
-        assert(aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0);
-        aori.flashLoan(address(flashloanReceiver), address(tokenA), 100, "", false);
-        assert(aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0);
+        assert(
+            aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
+        );
+        aori.flashLoan(
+            address(flashloanReceiver),
+            address(tokenA),
+            100,
+            "",
+            false
+        );
+        assert(
+            aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
+        );
         vm.stopPrank();
     }
 
@@ -700,53 +1275,57 @@ contract AoriV2Test is BaseFixture {
     }
 
     /*//////////////////////////////////////////////////////////////
-                              SETTAKERFEE
-    //////////////////////////////////////////////////////////////*/
-
-    function testSetTakerFee_failNotOwner() public {
-        vm.startPrank(FAKE_SERVER_WALLET);
-        vm.expectRevert("Taker fee address must be server signer");
-        aori.setTakerFee(100, FAKE_SERVER_WALLET);
-        vm.stopPrank();
-    }
-
-    function testSetTakerFee_failBipsMoreThan100() public {
-        vm.startPrank(SERVER_WALLET);
-        vm.expectRevert("Taker fee bips must be less than 1%");
-        aori.setTakerFee(101, TAKER_WALLET);
-        vm.stopPrank();
-    }
-
-    function testSetTakerFee_success() public {
-        vm.startPrank(SERVER_WALLET);
-        aori.setTakerFee(100, TAKER_WALLET);
-        vm.stopPrank();
-    }
-
-    /*//////////////////////////////////////////////////////////////
                              WITHDRAW FEES
     //////////////////////////////////////////////////////////////*/
 
     function testWithdrawFees_successMaker() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 103, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 102, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            100,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            100,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 103);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 102);
         /// Settle
-        _settleAoriOrders_successfulCustomSettler(MAKER_WALLET, makerOrder, takerOrder);
+        _settleAoriOrders_successfulCustomSettler(
+            MAKER_WALLET,
+            makerOrder,
+            takerOrder
+        );
 
         assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 3);
-        assert(aori.balanceOf(MAKER_WALLET, address(tokenB)) == 102);
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenB)) == 100);
         assert(aori.balanceOf(TAKER_WALLET, address(tokenA)) == 100);
-        assert(aori.balanceOf(TAKER_WALLET, address(tokenB)) == 0);
+        assert(aori.balanceOf(TAKER_WALLET, address(tokenB)) == 2);
         assert(aori.balanceOf(SERVER_WALLET, address(tokenA)) == 0);
         assert(aori.balanceOf(SERVER_WALLET, address(tokenB)) == 0);
     }
 
     function testWithdrawFees_successThirdPartySettler() public {
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(MAKER_WALLET, address(tokenA), 103, address(tokenB), 100);
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(TAKER_WALLET, address(tokenB), 102, address(tokenA), 100);
+        IAoriV2.Order memory makerOrder = _generateBaseOrder(
+            MAKER_WALLET,
+            address(tokenA),
+            103,
+            address(tokenB),
+            100
+        );
+        IAoriV2.Order memory takerOrder = _generateBaseOrder(
+            TAKER_WALLET,
+            address(tokenB),
+            102,
+            address(tokenA),
+            100
+        );
         /// Prepare
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 103);
         _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 102);

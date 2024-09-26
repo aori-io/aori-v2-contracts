@@ -1,7 +1,6 @@
 pragma solidity 0.8.17;
 
 interface IAoriV2 {
-
     /*//////////////////////////////////////////////////////////////
                                 STRUCTS
     //////////////////////////////////////////////////////////////*/
@@ -26,20 +25,26 @@ interface IAoriV2 {
     struct MatchingDetails {
         Order makerOrder;
         Order takerOrder;
-
         bytes makerSignature;
         bytes takerSignature;
         uint256 blockDeadline;
-
-        // Seat details
-        uint256 seatNumber;
-        address seatHolder;
-        uint256 seatPercentOfFees;
+        // Fee
+        string feeTag;
+        address feeRecipient;
     }
 
     /*//////////////////////////////////////////////////////////////
                                  EVENTS
     //////////////////////////////////////////////////////////////*/
+
+    event FeeReceived(
+        address indexed feeRecipient,
+        string indexed feeTag,
+        address inputToken,
+        uint256 inputAmount,
+        address outputToken,
+        uint256 outputAmount
+    );
 
     event OrdersSettled(
         bytes32 indexed makerHash,
@@ -61,13 +66,21 @@ interface IAoriV2 {
                                  SETTLE
     //////////////////////////////////////////////////////////////*/
 
-    function settleOrders(MatchingDetails calldata matching, bytes calldata serverSignature, bytes calldata hookData, bytes calldata options) external payable;
+    function settleOrders(
+        MatchingDetails calldata matching,
+        bytes calldata serverSignature,
+        bytes calldata hookData
+    ) external payable;
 
     /*//////////////////////////////////////////////////////////////
                                 DEPOSIT
     //////////////////////////////////////////////////////////////*/
 
-    function deposit(address _account, address _token, uint256 _amount) external;
+    function deposit(
+        address _account,
+        address _token,
+        uint256 _amount
+    ) external;
 
     /*//////////////////////////////////////////////////////////////
                                 WITHDRAW
@@ -79,7 +92,13 @@ interface IAoriV2 {
                                FLASHLOAN
     //////////////////////////////////////////////////////////////*/
 
-    function flashLoan(address recipient, address token, uint256 amount, bytes memory userData, bool receiveToken) external;
+    function flashLoan(
+        address recipient,
+        address token,
+        uint256 amount,
+        bytes memory userData,
+        bool receiveToken
+    ) external;
 
     /*//////////////////////////////////////////////////////////////
                                  COUNTER
@@ -89,17 +108,16 @@ interface IAoriV2 {
     function getCounter() external view returns (uint256);
 
     /*//////////////////////////////////////////////////////////////
-                               TAKER FEE
-    //////////////////////////////////////////////////////////////*/
-
-    function setTakerFee(uint8 _takerFeeBips, address _takerFeeAddress) external;
-
-    /*//////////////////////////////////////////////////////////////
                              VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function hasOrderSettled(bytes32 orderHash) external view returns (bool settled);
-    function balanceOf(address _account, address _token) external view returns (uint256 balance);
+    function hasOrderSettled(
+        bytes32 orderHash
+    ) external view returns (bool settled);
+    function balanceOf(
+        address _account,
+        address _token
+    ) external view returns (uint256 balance);
 
     /*//////////////////////////////////////////////////////////////
                             HELPER FUNCTIONS
@@ -107,11 +125,11 @@ interface IAoriV2 {
 
     function signatureIntoComponents(
         bytes memory signature
-    ) external pure returns (
-        uint8 v,
-        bytes32 r,
-        bytes32 s
-    );
-    function getOrderHash(Order memory order) external view returns (bytes32 orderHash);
-    function getMatchingHash(MatchingDetails calldata matching) external view returns (bytes32 matchingHash);
+    ) external pure returns (uint8 v, bytes32 r, bytes32 s);
+    function getOrderHash(
+        Order memory order
+    ) external view returns (bytes32 orderHash);
+    function getMatchingHash(
+        MatchingDetails calldata matching
+    ) external view returns (bytes32 matchingHash);
 }
