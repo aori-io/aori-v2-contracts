@@ -133,6 +133,10 @@ contract AoriV2 is IAoriV2 {
             "Zone does not match this contract"
         );
 
+        /*//////////////////////////////////////////////////////////////
+                              SIGNATURE VALIDATION
+        //////////////////////////////////////////////////////////////*/
+
         // Compute order hashes of both orders
         bytes32 makerHash = getOrderHash(matching.makerOrder);
         bytes32 takerHash = getOrderHash(matching.takerOrder);
@@ -156,6 +160,7 @@ contract AoriV2 is IAoriV2 {
             "Maker signature does not correspond to order details"
         );
 
+        // Check taker signature
         (
             uint8 takerV,
             bytes32 takerR,
@@ -173,6 +178,10 @@ contract AoriV2 is IAoriV2 {
             ),
             "Taker signature does not correspond to order details"
         );
+
+        /*//////////////////////////////////////////////////////////////
+                              MATCHING VALIDATION
+        //////////////////////////////////////////////////////////////*/
 
         // Check that tokens are for each other
         require(
@@ -204,10 +213,6 @@ contract AoriV2 is IAoriV2 {
             "Taker order has been settled"
         );
 
-        /*//////////////////////////////////////////////////////////////
-                              MATCHING VALIDATION
-        //////////////////////////////////////////////////////////////*/
-
         (
             uint8 serverV,
             bytes32 serverR,
@@ -231,14 +236,14 @@ contract AoriV2 is IAoriV2 {
             "Server signature does not correspond to order details"
         );
 
-        /*//////////////////////////////////////////////////////////////
-                                     SETTLE
-        //////////////////////////////////////////////////////////////*/
-
         // These two lines alone cost 40k gas due to storage in the worst case :sad:
         // This itself is a form of non-reentrancy due to the order status checks above.
         BitMaps.set(orderStatus, uint256(makerHash));
         BitMaps.set(orderStatus, uint256(takerHash));
+
+        /*//////////////////////////////////////////////////////////////
+                             SETTLE: TAKER-TO-MAKER
+        //////////////////////////////////////////////////////////////*/
 
         // (Taker ==> Maker) processing
         // Either subtract from in-contract balance or transfer from taker's wallet
@@ -273,6 +278,10 @@ contract AoriV2 is IAoriV2 {
                 matching.makerOrder.outputAmount
             );
         }
+
+        /*//////////////////////////////////////////////////////////////
+                             SETTLE: MAKER-TO-TAKER
+        //////////////////////////////////////////////////////////////*/
 
         // (Maker ==> Taker) processing
         // Before-Aori-Trade Hook
@@ -316,6 +325,10 @@ contract AoriV2 is IAoriV2 {
             );
         }
 
+        /*//////////////////////////////////////////////////////////////
+                            SETTLE: FEE PROCESSING
+        //////////////////////////////////////////////////////////////*/
+
         // Fee processing
         // The fee recipient keeps any excess
         if (
@@ -333,6 +346,10 @@ contract AoriV2 is IAoriV2 {
                 matching.takerOrder.inputAmount -
                 matching.makerOrder.outputAmount;
         }
+
+        /*//////////////////////////////////////////////////////////////
+                             POST-TRADE PROCESSING
+        //////////////////////////////////////////////////////////////*/
 
         // Emit
         emit FeeReceived(
