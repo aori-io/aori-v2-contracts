@@ -51,10 +51,6 @@ contract AoriV2 is IAoriV2 {
     //         unfair way. A new contract would need to be
     //         deployed with a new deployer.
     address private immutable serverSigner;
-    // Taker fee in bips i.e 100 = 1%
-    uint8 private takerFeeBips;
-    // Fees are paid to this address
-    address private takerFeeAddress;
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
