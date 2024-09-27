@@ -203,62 +203,6 @@ contract AoriV2Test is BaseFixture {
         );
     }
 
-    function testSettleOrders_failMakerCounterTooOld() public {
-        /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(
-            MAKER_WALLET,
-            address(tokenA),
-            100,
-            address(tokenB),
-            100
-        );
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(
-            TAKER_WALLET,
-            address(tokenB),
-            100,
-            address(tokenA),
-            100
-        );
-        /// Prepare
-        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
-        _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
-        _incrementCounter(MAKER_WALLET);
-        /// Settle
-        _settleAoriOrders_expectRevert(
-            makerOrder,
-            takerOrder,
-            "Counter of maker order is too low"
-        );
-    }
-
-    function testSettleOrders_failTakerCounterTooOld() public {
-        /// Create Orders
-        IAoriV2.Order memory makerOrder = _generateBaseOrder(
-            MAKER_WALLET,
-            address(tokenA),
-            100,
-            address(tokenB),
-            100
-        );
-        IAoriV2.Order memory takerOrder = _generateBaseOrder(
-            TAKER_WALLET,
-            address(tokenB),
-            100,
-            address(tokenA),
-            100
-        );
-        /// Prepare
-        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
-        _mintApproveDepositAori(TAKER_WALLET, address(tokenB), 1 ether);
-        _incrementCounter(TAKER_WALLET);
-        /// Settle
-        _settleAoriOrders_expectRevert(
-            makerOrder,
-            takerOrder,
-            "Counter of taker order is too low"
-        );
-    }
-
     function testSettleOrders_failMakerChainIdIsNotCorrect() public {
         /// Create Orders
         IAoriV2.Order memory makerOrder = _generateBaseOrder(
@@ -1160,19 +1104,6 @@ contract AoriV2Test is BaseFixture {
         assert(
             aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
         );
-        vm.stopPrank();
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                             INCREMENTNONCE
-    //////////////////////////////////////////////////////////////*/
-
-    function testIncrementCounter_success() public {
-        vm.startPrank(MAKER_WALLET);
-        assert(aori.getCounter() == 0);
-        uint256 counter = aori.getCounter();
-        aori.incrementCounter();
-        assertEq(aori.getCounter(), counter + 1);
         vm.stopPrank();
     }
 

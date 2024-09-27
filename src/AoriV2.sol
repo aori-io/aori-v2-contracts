@@ -39,11 +39,6 @@ contract AoriV2 is IAoriV2 {
     //         owner and the secondary index is by token.
     mapping(address => mapping(address => uint256)) private balances;
 
-    // @notice Counters for each address. A user can cancel orders
-    //         by incrementing their counter, similar to how
-    //         Seaport does it.
-    mapping(address => uint256) private addressCounter;
-
     // @notice Server signer wallet used to verify matching for
     //         this contract. Again, the key should be protected.
     //         In the case that a key is compromised, no funds
@@ -93,18 +88,6 @@ contract AoriV2 is IAoriV2 {
         require(
             matching.takerOrder.endTime >= block.timestamp,
             "Taker order end time has already passed"
-        );
-
-        // Check counters (note: we allow orders with a counter greater than or equal to the current counter to be executed immediately)
-        require(
-            matching.makerOrder.counter >=
-                addressCounter[matching.makerOrder.offerer],
-            "Counter of maker order is too low"
-        );
-        require(
-            matching.takerOrder.counter >=
-                addressCounter[matching.takerOrder.offerer],
-            "Counter of taker order is too low"
         );
 
         // And the chainId is the set chainId for the order such that
@@ -454,22 +437,6 @@ contract AoriV2 is IAoriV2 {
     }
 
     /*//////////////////////////////////////////////////////////////
-                                 NONCE
-    //////////////////////////////////////////////////////////////*/
-
-    /// @notice Increment the counter of the sender. Note that this is
-    ///         counter is not exactly a sequence number. It is a
-    ///         counter that is incremented to denote the current cancel
-    ///         index of the sender. e.g see https://support.opensea.io/en/articles/8867010-how-can-i-manage-my-offers
-    function incrementCounter() external {
-        addressCounter[msg.sender] += 1;
-    }
-
-    function getCounter() external view returns (uint256) {
-        return addressCounter[msg.sender];
-    }
-
-    /*//////////////////////////////////////////////////////////////
                              VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
@@ -521,7 +488,6 @@ contract AoriV2 is IAoriV2 {
                 order.startTime,
                 order.endTime,
                 // =====
-                order.counter,
                 order.toWithdraw
             )
         );

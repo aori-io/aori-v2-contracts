@@ -18,7 +18,6 @@ interface IAoriV2 {
         uint32 startTime;
         uint32 endTime;
         // =====
-        uint32 counter;
         bool toWithdraw;
     }
 
@@ -97,13 +96,6 @@ interface IAoriV2 {
         bytes memory userData,
         bool receiveToken
     ) external;
-
-    /*//////////////////////////////////////////////////////////////
-                                 COUNTER
-    //////////////////////////////////////////////////////////////*/
-
-    function incrementCounter() external;
-    function getCounter() external view returns (uint256);
 
     /*//////////////////////////////////////////////////////////////
                              VIEW FUNCTIONS

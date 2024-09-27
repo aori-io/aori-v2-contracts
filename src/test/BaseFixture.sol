@@ -137,7 +137,6 @@ contract BaseFixture is DSTest {
                 startTime: uint32(block.timestamp),
                 endTime: uint32(block.timestamp + 1000),
                 // =====
-                counter: 0,
                 toWithdraw: false
             });
     }
@@ -164,7 +163,6 @@ contract BaseFixture is DSTest {
                 startTime: uint32(block.timestamp),
                 endTime: uint32(block.timestamp + 1000),
                 // =====
-                counter: 0,
                 toWithdraw: false
             });
     }
@@ -404,10 +402,5 @@ contract BaseFixture is DSTest {
         vm.expectRevert(revertData);
         aori.settleOrders(matching, abi.encodePacked(r, s, v), "");
         vm.stopPrank();
-    }
-
-    function _incrementCounter(address _to) public {
-        vm.prank(_to);
-        aori.incrementCounter();
     }
 }
