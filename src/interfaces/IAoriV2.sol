@@ -22,6 +22,8 @@ interface IAoriV2 {
     }
 
     struct MatchingDetails {
+        string tradeId;
+        // =====
         Order makerOrder;
         Order takerOrder;
         // =====
@@ -46,17 +48,14 @@ interface IAoriV2 {
     );
 
     event OrdersSettled(
-        bytes32 indexed makerHash,
-        bytes32 indexed takerHash,
-        address maker,
-        address taker,
-        address inputToken,
-        address outputToken,
-        uint256 inputAmount,
-        uint256 outputAmount,
+        string indexed tradeId,
+        address indexed maker,
+        address indexed taker,
+        bytes32 matchingHash,
+        bytes32 makerOrderHash,
+        bytes32 takerOrderHash,
         address zone,
-        uint160 chainId,
-        bytes32 matchingHash
+        uint160 chainId
     );
 
     /*//////////////////////////////////////////////////////////////

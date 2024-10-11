@@ -407,6 +407,7 @@ contract AoriV2Test is BaseFixture {
 
         /// Settle
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
+            tradeId: "aori-1",
             makerOrder: makerOrder,
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
@@ -454,6 +455,7 @@ contract AoriV2Test is BaseFixture {
 
         /// Settle
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
+            tradeId: "aori-1",
             makerOrder: makerOrder,
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
@@ -658,6 +660,7 @@ contract AoriV2Test is BaseFixture {
 
         /// Settle
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
+            tradeId: "aori-1",
             makerOrder: makerOrder,
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
@@ -708,6 +711,7 @@ contract AoriV2Test is BaseFixture {
 
         /// Settle
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
+            tradeId: "aori-1",
             makerOrder: makerOrder,
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
@@ -754,6 +758,7 @@ contract AoriV2Test is BaseFixture {
         );
 
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
+            tradeId: "aori-1",
             makerOrder: makerOrder,
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
@@ -810,6 +815,7 @@ contract AoriV2Test is BaseFixture {
         );
 
         IAoriV2.MatchingDetails memory matching = IAoriV2.MatchingDetails({
+            tradeId: "aori-1",
             makerOrder: makerOrder,
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),

@@ -197,6 +197,7 @@ contract BaseFixture is DSTest {
 
         return
             IAoriV2.MatchingDetails({
+                tradeId: "aori-1",
                 makerOrder: makerOrder,
                 takerOrder: takerOrder,
                 makerSignature: abi.encodePacked(makerR, makerS, makerV),
@@ -267,6 +268,7 @@ contract BaseFixture is DSTest {
         );
 
         matching = IAoriV2.MatchingDetails({
+            tradeId: "aori-1",
             makerOrder: makerOrder,
             takerOrder: takerOrder,
             makerSignature: abi.encodePacked(makerR, makerS, makerV),
