@@ -415,6 +415,8 @@ contract AoriV2 is IAoriV2 {
         bytes memory userData,
         bool receiveToken
     ) external {
+        uint256 startingBalance = IERC20(token).balanceOf(address(this));
+
         // Flash loan
         if (receiveToken) {
             IERC20(token).safeTransfer(recipient, amount);
@@ -430,11 +432,19 @@ contract AoriV2 is IAoriV2 {
             receiveToken
         );
 
+        // Repay the flash loan
         if (receiveToken) {
             IERC20(token).safeTransferFrom(recipient, address(this), amount);
         } else {
             balances[recipient][token] -= amount;
         }
+
+        // Set invariant that the contract should have at least the starting balance
+        // or more before and after the flash loan
+        require(
+            IERC20(token).balanceOf(address(this)) >= startingBalance,
+            "Flash loan not repaid"
+        );
     }
 
     /*//////////////////////////////////////////////////////////////

@@ -6,6 +6,7 @@ import {Utilities} from "./utils/Utilities.sol";
 import {console} from "./utils/Console.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {SimpleToken} from "./mocks/SimpleToken.sol";
+import {FeeOnTransferToken} from "./mocks/FeeOnTransferToken.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
 import {AoriV2} from "../AoriV2.sol";
@@ -1063,6 +1064,26 @@ contract AoriV2Test is BaseFixture {
         );
         vm.stopPrank();
     }
+
+    function testFlashLoan_failFeeOnTransferToken() public {
+        tokenA = new FeeOnTransferToken(10);
+        _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
+
+        vm.prank(address(flashloanReceiver));
+        IERC20(address(tokenA)).approve(address(aori), 1 ether);
+
+        vm.startPrank(TAKER_WALLET);
+        vm.expectRevert("Flash loan not repaid");
+        aori.flashLoan(
+            address(flashloanReceiver),
+            address(tokenA),
+            100,
+            "",
+            true
+        );
+        vm.stopPrank();
+    }
+
     function testFlashLoan_successZeroLiquidity() public {
         vm.startPrank(MAKER_WALLET);
         aori.flashLoan(
