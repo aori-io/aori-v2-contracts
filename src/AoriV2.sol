@@ -52,6 +52,10 @@ contract AoriV2 is IAoriV2 {
     //////////////////////////////////////////////////////////////*/
 
     constructor(address _serverSigner) {
+        require(
+            _serverSigner != address(0),
+            "Server signer cannot be zero address"
+        );
         serverSigner = _serverSigner;
     }
 

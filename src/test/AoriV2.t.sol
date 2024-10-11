@@ -18,6 +18,15 @@ interface IERC20Mintable is IERC20 {
 
 contract AoriV2Test is BaseFixture {
     /*//////////////////////////////////////////////////////////////
+                              CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+
+    function testConstructor_failServerSignerIsZeroAddress() public {
+        vm.expectRevert("Server signer cannot be zero address");
+        new AoriV2(address(0));
+    }
+
+    /*//////////////////////////////////////////////////////////////
                                 DEPOSIT
     //////////////////////////////////////////////////////////////*/
 
