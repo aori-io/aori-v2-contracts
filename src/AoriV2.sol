@@ -204,18 +204,15 @@ contract AoriV2 is IAoriV2 {
 
         // Ensure that the server has signed off on these matching details
         require(
-            serverSigner ==
-                ecrecover(
-                    keccak256(
-                        abi.encodePacked(
-                            "\x19Ethereum Signed Message:\n32",
-                            getMatchingHash(matching)
-                        )
-                    ),
-                    serverV,
-                    serverR,
-                    serverS
+            serverSigner.isValidSignatureNow(
+                keccak256(
+                    abi.encodePacked(
+                        "\x19Ethereum Signed Message:\n32",
+                        getMatchingHash(matching)
+                    )
                 ),
+                abi.encodePacked(serverR, serverS, serverV)
+            ),
             "Server signature does not correspond to order details"
         );
 
