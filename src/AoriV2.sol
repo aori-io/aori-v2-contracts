@@ -47,6 +47,11 @@ contract AoriV2 is IAoriV2 {
     //         deployed with a new deployer.
     address private immutable serverSigner;
 
+    // @notice Taker fee recipient and fee in bips
+    address private takerFeeRecipient;
+    uint256 private takerFeeInBips;
+    uint256 private constant TAKER_FEE_DENOMINATOR = 10_000;
+
     // @notice Reentrancy guard
     bool private locked;
 
@@ -185,7 +190,8 @@ contract AoriV2 is IAoriV2 {
             "Taker order output amount is more than maker order input amount"
         );
         require(
-            matching.makerOrder.outputAmount <= matching.takerOrder.inputAmount,
+            withFee(matching.makerOrder.outputAmount, takerFeeInBips) <=
+                matching.takerOrder.inputAmount,
             "Maker order output amount is more than taker order input amount"
         );
 
@@ -312,6 +318,13 @@ contract AoriV2 is IAoriV2 {
                             SETTLE: FEE PROCESSING
         //////////////////////////////////////////////////////////////*/
 
+        // First, pay taker fee
+        if (takerFeeInBips > 0) {
+            balances[takerFeeRecipient][matching.makerOrder.outputToken] +=
+                withFee(matching.makerOrder.outputAmount, takerFeeInBips) -
+                matching.makerOrder.outputAmount;
+        }
+
         // Fee processing
         // The fee recipient keeps any excess
         if (
@@ -323,11 +336,12 @@ contract AoriV2 is IAoriV2 {
         }
 
         if (
-            matching.takerOrder.inputAmount > matching.makerOrder.outputAmount
+            matching.takerOrder.inputAmount >
+            withFee(matching.makerOrder.outputAmount, takerFeeInBips)
         ) {
             balances[matching.feeRecipient][matching.makerOrder.outputToken] +=
                 matching.takerOrder.inputAmount -
-                matching.makerOrder.outputAmount;
+                withFee(matching.makerOrder.outputAmount, takerFeeInBips);
         }
 
         /*//////////////////////////////////////////////////////////////
@@ -341,7 +355,8 @@ contract AoriV2 is IAoriV2 {
             matching.makerOrder.inputToken,
             matching.makerOrder.inputAmount - matching.takerOrder.outputAmount,
             matching.makerOrder.outputToken,
-            matching.takerOrder.inputAmount - matching.makerOrder.outputAmount
+            matching.takerOrder.inputAmount -
+                withFee(matching.makerOrder.outputAmount, takerFeeInBips)
         );
 
         // After-Aori-Trade Hook
@@ -459,6 +474,51 @@ contract AoriV2 is IAoriV2 {
             IERC20(token).balanceOf(address(this)) >= startingBalance,
             "Flash loan not repaid"
         );
+    }
+
+    /*//////////////////////////////////////////////////////////////
+                               TAKER FEE
+    //////////////////////////////////////////////////////////////*/
+
+    function setTakerFee(
+        address _newFeeRecipient,
+        uint256 _newFeeInBips
+    ) external {
+        require(
+            _newFeeRecipient != address(0),
+            "Fee recipient cannot be zero address"
+        );
+        require(_newFeeInBips < 100, "Fee in bips cannot be greater than 1%");
+
+        takerFeeRecipient = _newFeeRecipient;
+        takerFeeInBips = _newFeeInBips;
+    }
+
+    function getTakerFee()
+        external
+        view
+        returns (address feeRecipient, uint256 feeInBips)
+    {
+        feeRecipient = takerFeeRecipient;
+        feeInBips = takerFeeInBips;
+    }
+
+    function withFee(
+        uint256 amount,
+        uint256 feeInBips
+    ) public view returns (uint256) {
+        return
+            (amount * (TAKER_FEE_DENOMINATOR + feeInBips)) /
+            TAKER_FEE_DENOMINATOR;
+    }
+
+    function withoutFee(
+        uint256 amount,
+        uint256 feeInBips
+    ) public view returns (uint256) {
+        return
+            (amount * TAKER_FEE_DENOMINATOR) /
+            (TAKER_FEE_DENOMINATOR + feeInBips);
     }
 
     /*//////////////////////////////////////////////////////////////

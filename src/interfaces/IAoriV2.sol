@@ -97,6 +97,20 @@ interface IAoriV2 {
     ) external;
 
     /*//////////////////////////////////////////////////////////////
+                               TAKER FEE
+    //////////////////////////////////////////////////////////////*/
+
+    function setTakerFee(
+        address _newFeeRecipient,
+        uint256 _newFeeInBips
+    ) external;
+
+    function getTakerFee()
+        external
+        view
+        returns (address feeRecipient, uint256 feeInBips);
+
+    /*//////////////////////////////////////////////////////////////
                              VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
