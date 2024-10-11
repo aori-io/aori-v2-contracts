@@ -47,6 +47,9 @@ contract AoriV2 is IAoriV2 {
     //         deployed with a new deployer.
     address private immutable serverSigner;
 
+    // @notice Reentrancy guard
+    bool private locked;
+
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
@@ -382,8 +385,13 @@ contract AoriV2 is IAoriV2 {
         address _token,
         uint256 _amount
     ) external {
+        uint256 startingBalance = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
-        balances[_account][_token] += _amount;
+
+        // Add delta of balance to the account
+        balances[_account][_token] +=
+            IERC20(_token).balanceOf(address(this)) -
+            startingBalance;
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -394,8 +402,17 @@ contract AoriV2 is IAoriV2 {
     /// @param _token The token to withdraw
     /// @param _amount The amount to withdraw
     function withdraw(address _token, uint256 _amount) external {
-        balances[msg.sender][_token] -= (_amount);
+        // Lock
+        require(!locked, "Reentrancy guard");
+        locked = true;
+
+        uint256 startingBalance = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(msg.sender, _amount);
+        balances[msg.sender][_token] -=
+            startingBalance -
+            IERC20(_token).balanceOf(address(this));
+
+        locked = false;
     }
 
     /*//////////////////////////////////////////////////////////////

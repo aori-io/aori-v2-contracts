@@ -7,6 +7,7 @@ import {console} from "./utils/Console.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {SimpleToken} from "./mocks/SimpleToken.sol";
 import {FeeOnTransferToken} from "./mocks/FeeOnTransferToken.sol";
+import {MaxTransferToken} from "./mocks/MaxTransferToken.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 
 import {AoriV2} from "../AoriV2.sol";
@@ -58,6 +59,29 @@ contract AoriV2Test is BaseFixture {
         assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == amount);
     }
 
+    function testDeposit_successFeeOnTransferToken() public {
+        tokenA = new FeeOnTransferToken(10);
+        uint256 amount = 100;
+        vm.startPrank(MAKER_WALLET);
+        tokenA.mint(amount);
+        tokenA.approve(address(aori), amount);
+        aori.deposit(MAKER_WALLET, address(tokenA), amount);
+        vm.stopPrank();
+        assert(tokenA.balanceOf(address(aori)) == 90);
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 90);
+    }
+
+    function testDeposit_successMaxTransferToken() public {
+        tokenA = new MaxTransferToken();
+        uint256 amount = type(uint256).max;
+        vm.startPrank(MAKER_WALLET);
+        tokenA.mint(150);
+        tokenA.approve(address(aori), amount);
+        aori.deposit(MAKER_WALLET, address(tokenA), amount);
+        vm.stopPrank();
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 150);
+    }
+
     /*//////////////////////////////////////////////////////////////
                                 WITHDRAW
     //////////////////////////////////////////////////////////////*/
@@ -90,6 +114,26 @@ contract AoriV2Test is BaseFixture {
         assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == amount);
         aori.withdraw(address(tokenA), amount);
         vm.stopPrank();
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 0);
+    }
+
+    function testWithdraw_successMaxTransferToken() public {
+        tokenA = new MaxTransferToken();
+        uint256 amount = type(uint256).max;
+        vm.startPrank(MAKER_WALLET);
+        tokenA.mint(150);
+        tokenA.approve(address(aori), amount);
+        aori.deposit(MAKER_WALLET, address(tokenA), amount);
+
+        assert(tokenA.balanceOf(address(aori)) == 150);
+        assert(tokenA.balanceOf(MAKER_WALLET) == 0);
+        assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 150);
+
+        aori.withdraw(address(tokenA), amount);
+        vm.stopPrank();
+
+        assert(tokenA.balanceOf(address(aori)) == 0);
+        assert(tokenA.balanceOf(MAKER_WALLET) == 150);
         assert(aori.balanceOf(MAKER_WALLET, address(tokenA)) == 0);
     }
 
