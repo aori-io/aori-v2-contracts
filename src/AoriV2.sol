@@ -133,42 +133,46 @@ contract AoriV2 is IAoriV2 {
         bytes32 takerHash = getOrderHash(matching.takerOrder);
 
         // Check maker signature
-        (
-            uint8 makerV,
-            bytes32 makerR,
-            bytes32 makerS
-        ) = signatureIntoComponents(matching.makerSignature);
-        require(
-            matching.makerOrder.offerer.isValidSignatureNow(
-                keccak256(
-                    abi.encodePacked(
-                        "\x19Ethereum Signed Message:\n32",
-                        makerHash
-                    )
+        if (matching.makerOrder.inputAmount > 0) {
+            (
+                uint8 makerV,
+                bytes32 makerR,
+                bytes32 makerS
+            ) = signatureIntoComponents(matching.makerSignature);
+            require(
+                matching.makerOrder.offerer.isValidSignatureNow(
+                    keccak256(
+                        abi.encodePacked(
+                            "\x19Ethereum Signed Message:\n32",
+                            makerHash
+                        )
+                    ),
+                    abi.encodePacked(makerR, makerS, makerV)
                 ),
-                abi.encodePacked(makerR, makerS, makerV)
-            ),
-            "Maker signature does not correspond to order details"
-        );
+                "Maker signature does not correspond to order details"
+            );
+        }
 
         // Check taker signature
-        (
-            uint8 takerV,
-            bytes32 takerR,
-            bytes32 takerS
-        ) = signatureIntoComponents(matching.takerSignature);
-        require(
-            matching.takerOrder.offerer.isValidSignatureNow(
-                keccak256(
-                    abi.encodePacked(
-                        "\x19Ethereum Signed Message:\n32",
-                        takerHash
-                    )
+        if (matching.takerOrder.inputAmount > 0) {
+            (
+                uint8 takerV,
+                bytes32 takerR,
+                bytes32 takerS
+            ) = signatureIntoComponents(matching.takerSignature);
+            require(
+                matching.takerOrder.offerer.isValidSignatureNow(
+                    keccak256(
+                        abi.encodePacked(
+                            "\x19Ethereum Signed Message:\n32",
+                            takerHash
+                        )
+                    ),
+                    abi.encodePacked(takerR, takerS, takerV)
                 ),
-                abi.encodePacked(takerR, takerS, takerV)
-            ),
-            "Taker signature does not correspond to order details"
-        );
+                "Taker signature does not correspond to order details"
+            );
+        }
 
         /*//////////////////////////////////////////////////////////////
                               MATCHING VALIDATION
