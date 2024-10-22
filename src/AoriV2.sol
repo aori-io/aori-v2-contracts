@@ -587,6 +587,8 @@ contract AoriV2 is IAoriV2 {
     ) public view returns (bytes32 matchingHash) {
         matchingHash = keccak256(
             abi.encodePacked(
+                matching.tradeId,
+                // =====
                 matching.makerSignature,
                 matching.takerSignature,
                 // =====
