@@ -20,13 +20,13 @@ contract DeployScript is Script, MultichainDeployScript {
             abi.encode(deployerAddress)
         );
 
-        string memory AORI_VERSION = "Aori v2.3";
+        string memory AORI_VERSION = "Aori v2.3.1";
 
         /*//////////////////////////////////////////////////////////////
                                     TESTNETS
         //////////////////////////////////////////////////////////////*/
 
-        // deployTo("sepolia", AORI_VERSION, bytecode);
+        deployTo("sepolia", AORI_VERSION, bytecode);
         // deployTo("arbitrum-sepolia", AORI_VERSION, bytecode);
         // deployTo("berachain-artio", AORI_VERSION, bytecode);
 
@@ -35,7 +35,7 @@ contract DeployScript is Script, MultichainDeployScript {
         //////////////////////////////////////////////////////////////*/
 
         // deployTo("arbitrum", AORI_VERSION, bytecode);
-        deployTo("mainnet", AORI_VERSION, bytecode);
+        // deployTo("mainnet", AORI_VERSION, bytecode);
         // deployTo("celo", AORI_VERSION, bytecode);
         // deployTo("optimism", AORI_VERSION, bytecode);
         // deployTo("polygon", AORI_VERSION, bytecode);
