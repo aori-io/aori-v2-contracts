@@ -26,7 +26,7 @@ contract DeployScript is Script, MultichainDeployScript {
                                     TESTNETS
         //////////////////////////////////////////////////////////////*/
 
-        deployTo("sepolia", AORI_VERSION, bytecode);
+        // deployTo("sepolia", AORI_VERSION, bytecode);
         // deployTo("arbitrum-sepolia", AORI_VERSION, bytecode);
         // deployTo("berachain-artio", AORI_VERSION, bytecode);
 
@@ -34,13 +34,13 @@ contract DeployScript is Script, MultichainDeployScript {
                                     MAINNETS
         //////////////////////////////////////////////////////////////*/
 
-        // deployTo("arbitrum", AORI_VERSION, bytecode);
+        deployTo("arbitrum", AORI_VERSION, bytecode);
         // deployTo("mainnet", AORI_VERSION, bytecode);
         // deployTo("celo", AORI_VERSION, bytecode);
         // deployTo("optimism", AORI_VERSION, bytecode);
         // deployTo("polygon", AORI_VERSION, bytecode);
         // deployTo("blast", AORI_VERSION, blastBytecode);
-        // deployTo("base", AORI_VERSION, bytecode);
+        deployTo("base", AORI_VERSION, bytecode);
         // deployTo("linea", AORI_VERSION, bytecode);
         // deployTo("mantle", AORI_VERSION, bytecode);
         // deployTo("gnosis", AORI_VERSION, bytecode);
