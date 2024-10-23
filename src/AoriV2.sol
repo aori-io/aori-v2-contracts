@@ -45,7 +45,7 @@ contract AoriV2 is IAoriV2 {
     //         can be stolen but orders may be matched in an
     //         unfair way. A new contract would need to be
     //         deployed with a new deployer.
-    address private immutable serverSigner;
+    address public immutable serverSigner;
 
     // @notice Taker fee recipient and fee in bips
     address private takerFeeRecipient;
