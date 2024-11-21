@@ -377,12 +377,12 @@ contract AoriV2 is IAoriV2 {
 
         // Emit event
         emit OrdersSettled(
+            makerHash, // makerHash
+            takerHash, // takerHash
+            getMatchingHash(matching), // matchingHash
             matching.tradeId, // tradeId
             matching.makerOrder.offerer, // maker
             matching.takerOrder.offerer, // taker
-            getMatchingHash(matching), // matchingHash
-            makerHash, // makerHash
-            takerHash, // takerHash
             matching.makerOrder.zone, // zone
             matching.makerOrder.chainId // chainId
         );

@@ -1,3 +1,5 @@
+build:
+	forge build
 tests:
 	forge test --fork-url https://rpc.ankr.com/eth_sepolia --via-ir -vvv
 gas-report:

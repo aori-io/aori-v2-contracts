@@ -48,12 +48,12 @@ interface IAoriV2 {
     );
 
     event OrdersSettled(
-        string indexed tradeId,
-        address indexed maker,
-        address indexed taker,
-        bytes32 matchingHash,
-        bytes32 makerOrderHash,
-        bytes32 takerOrderHash,
+        bytes32 indexed makerOrderHash,
+        bytes32 indexed takerOrderHash,
+        bytes32 indexed matchingHash,
+        string tradeId,
+        address maker,
+        address taker,
         address zone,
         uint160 chainId
     );
