@@ -88,7 +88,7 @@ interface IAoriV2 {
                                FLASHLOAN
     //////////////////////////////////////////////////////////////*/
 
-    function flashLoan(
+    function flash(
         address recipient,
         address token,
         uint256 amount,

@@ -441,7 +441,7 @@ contract AoriV2 is IAoriV2 {
     /// @param amount The amount
     /// @param userData User data to pass to the recipient
     /// @param receiveToken Whether to receive the token directly or fine to keep in the contract for gas efficiency
-    function flashLoan(
+    function flash(
         address recipient,
         address token,
         uint256 amount,

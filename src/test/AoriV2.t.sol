@@ -1084,14 +1084,14 @@ contract AoriV2Test is BaseFixture {
     function testFlashLoan_failNoLiquidityForReceive() public {
         vm.startPrank(MAKER_WALLET);
         vm.expectRevert();
-        aori.flashLoan(MAKER_WALLET, address(tokenA), 100, "", true);
+        aori.flash(MAKER_WALLET, address(tokenA), 100, "", true);
         vm.stopPrank();
     }
     function testFlashLoan_failReceiveFlashLoanReverts() public {
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         vm.startPrank(MAKER_WALLET);
         vm.expectRevert();
-        aori.flashLoan(
+        aori.flash(
             address(revertFlashloanReceiver),
             address(tokenA),
             100,
@@ -1105,13 +1105,7 @@ contract AoriV2Test is BaseFixture {
         _mintApproveDepositAori(MAKER_WALLET, address(tokenA), 1 ether);
         vm.startPrank(MAKER_WALLET);
         vm.expectRevert();
-        aori.flashLoan(
-            address(flashloanReceiver),
-            address(tokenA),
-            100,
-            "",
-            true
-        );
+        aori.flash(address(flashloanReceiver), address(tokenA), 100, "", true);
         vm.stopPrank();
     }
 
@@ -1124,25 +1118,13 @@ contract AoriV2Test is BaseFixture {
 
         vm.startPrank(TAKER_WALLET);
         vm.expectRevert("Flash loan not repaid");
-        aori.flashLoan(
-            address(flashloanReceiver),
-            address(tokenA),
-            100,
-            "",
-            true
-        );
+        aori.flash(address(flashloanReceiver), address(tokenA), 100, "", true);
         vm.stopPrank();
     }
 
     function testFlashLoan_successZeroLiquidity() public {
         vm.startPrank(MAKER_WALLET);
-        aori.flashLoan(
-            address(flashloanReceiver),
-            address(tokenA),
-            0,
-            "",
-            true
-        );
+        aori.flash(address(flashloanReceiver), address(tokenA), 0, "", true);
         vm.stopPrank();
     }
     function testFlashLoan_successNoActionsReceive() public {
@@ -1153,13 +1135,7 @@ contract AoriV2Test is BaseFixture {
         assert(
             aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
         );
-        aori.flashLoan(
-            address(flashloanReceiver),
-            address(tokenA),
-            100,
-            "",
-            true
-        );
+        aori.flash(address(flashloanReceiver), address(tokenA), 100, "", true);
         assert(
             aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
         );
@@ -1174,13 +1150,7 @@ contract AoriV2Test is BaseFixture {
         assert(
             aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
         );
-        aori.flashLoan(
-            address(flashloanReceiver),
-            address(tokenA),
-            100,
-            "",
-            false
-        );
+        aori.flash(address(flashloanReceiver), address(tokenA), 100, "", false);
         assert(
             aori.balanceOf(address(flashloanReceiver), address(tokenA)) == 0
         );
