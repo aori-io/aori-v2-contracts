@@ -114,7 +114,11 @@ interface IAoriV2 {
                              VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function hasSettled(bytes32 orderHash) external view returns (bool settled);
+    function hasSettled(
+        address offerer,
+        bytes32 orderHash
+    ) external view returns (bool settled);
+
     function balanceOf(
         address _account,
         address _token

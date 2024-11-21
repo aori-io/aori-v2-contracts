@@ -1,7 +1,6 @@
 pragma solidity 0.8.17;
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import {SafeERC20} from "./libs/SafeERC20.sol";
-import {BitMaps} from "./libs/BitMaps.sol";
 import {IAoriV2} from "./interfaces/IAoriV2.sol";
 import {IAoriHook} from "./interfaces/IAoriHook.sol";
 import {IERC1271} from "./interfaces/IERC1271.sol";
@@ -20,7 +19,6 @@ contract AoriV2 is IAoriV2 {
                                LIBRARIES
     //////////////////////////////////////////////////////////////*/
 
-    using BitMaps for BitMaps.BitMap;
     using SafeERC20 for IERC20;
     using SignatureChecker for address;
 
@@ -28,16 +26,12 @@ contract AoriV2 is IAoriV2 {
                                  STATE
     //////////////////////////////////////////////////////////////*/
 
-    // @notice Orders are stored using buckets of bitmaps to allow
-    //         for potential gas optimisations by a bucket's bitmap
-    //         having been written to previously. Programmatic
-    //         users can also attempt to mine for specific order
-    //         hashes to hit a used bucket.
-    BitMaps.BitMap private orderStatus;
-
     // @notice 2D mapping of balances. The primary index is by
     //         owner and the secondary index is by token.
     mapping(address => mapping(address => uint256)) private balances;
+
+    // @notice Mapping of settled orders
+    mapping(address => mapping(bytes32 => bool)) private settledOrders;
 
     // @notice Server signer wallet used to verify matching for
     //         this contract. Again, the key should be protected.
@@ -201,11 +195,11 @@ contract AoriV2 is IAoriV2 {
 
         // Check order statuses and make sure that they haven't been settled
         require(
-            !BitMaps.get(orderStatus, uint256(makerHash)),
+            !hasSettled(matching.makerOrder.offerer, makerHash),
             "Maker order has been settled"
         );
         require(
-            !BitMaps.get(orderStatus, uint256(takerHash)),
+            !hasSettled(matching.takerOrder.offerer, takerHash),
             "Taker order has been settled"
         );
 
@@ -231,8 +225,8 @@ contract AoriV2 is IAoriV2 {
 
         // These two lines alone cost 40k gas due to storage in the worst case :sad:
         // This itself is a form of non-reentrancy due to the order status checks above.
-        BitMaps.set(orderStatus, uint256(makerHash));
-        BitMaps.set(orderStatus, uint256(takerHash));
+        settledOrders[matching.makerOrder.offerer][makerHash] = true;
+        settledOrders[matching.takerOrder.offerer][takerHash] = true;
 
         /*//////////////////////////////////////////////////////////////
                              SETTLE: TAKER-TO-MAKER
@@ -529,8 +523,11 @@ contract AoriV2 is IAoriV2 {
                              VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function hasSettled(bytes32 orderHash) public view returns (bool settled) {
-        settled = BitMaps.get(orderStatus, uint256(orderHash));
+    function hasSettled(
+        address offerer,
+        bytes32 orderHash
+    ) public view returns (bool settled) {
+        return settledOrders[offerer][orderHash];
     }
 
     function balanceOf(
