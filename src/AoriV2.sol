@@ -529,9 +529,7 @@ contract AoriV2 is IAoriV2 {
                              VIEW FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function hasOrderSettled(
-        bytes32 orderHash
-    ) public view returns (bool settled) {
+    function hasSettled(bytes32 orderHash) public view returns (bool settled) {
         settled = BitMaps.get(orderStatus, uint256(orderHash));
     }
 
