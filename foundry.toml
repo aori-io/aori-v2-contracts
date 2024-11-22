@@ -2,12 +2,15 @@
 optimizer_runs = 1_000_000
 verbosity = 1
 via_ir = true
+evm_version = "cancun"
 remappings = [
     "ds-test/=lib/ds-test/src/",
     "solmate/=lib/solmate/src/",
     "forge-std/=lib/forge-std/src/",
+    "transient-goodies/=lib/transient-goodies/src/",
+    "solady/=lib/solady/src/",
 ]
-solc = "0.8.17"
+solc = "0.8.24"
 
 # Extreme Fuzzing CI Profile :P
 [profile.ci]

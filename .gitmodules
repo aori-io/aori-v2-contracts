@@ -11,3 +11,9 @@
 [submodule "lib/ds-test"]
 	path = lib/ds-test
 	url = https://github.com/dapphub/ds-test
+[submodule "lib/transient-goodies"]
+	path = lib/transient-goodies
+	url = https://github.com/Philogy/transient-goodies
+[submodule "lib/solady"]
+	path = lib/solady
+	url = https://github.com/Vectorized/solady

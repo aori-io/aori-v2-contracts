@@ -4,8 +4,8 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 import {ICREATE3Factory} from "create3-factory/src/ICREATE3Factory.sol";
 import {MultichainDeployScript} from "./MultichainDeploy.s.sol";
-import "../src/AoriV2.sol";
-import "../src/AoriV2Blast.sol";
+import "../contracts/AoriV2.sol";
+import "../contracts/AoriV2Blast.sol";
 
 contract DeployScript is Script, MultichainDeployScript {
     function run() external {
