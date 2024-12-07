@@ -4,15 +4,13 @@ import {IZone} from "contracts/interfaces/IZone.sol";
 import {IClearing} from "contracts/interfaces/IClearing.sol";
 
 contract RevertingZone is IZone {
-
     function name() external view returns (string memory) {
         return "RevertingZone";
     }
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
-        bytes memory extraData,
-        bytes memory witness
+        bytes memory extraData
     ) external {
         revert("RevertingZone: This zone reverts on purpose");
     }

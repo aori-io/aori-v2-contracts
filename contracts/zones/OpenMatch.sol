@@ -10,15 +10,20 @@ struct Instruction {
     bytes data;
 }
 
-contract PermissionedMatch is IZone {
-    string public name;
-    address public immutable clearing;
-    address public manager;
+contract OpenMatch is IZone {
+    /*//////////////////////////////////////////////////////////////
+                                 STATE
+    //////////////////////////////////////////////////////////////*/
 
-    constructor(string memory _name, address _clearing, address _manager) {
-        name = _name;
+    string public name = "OpenMatch";
+    address public immutable clearing;
+
+    /*//////////////////////////////////////////////////////////////
+                              CONSTRUCTOR
+    //////////////////////////////////////////////////////////////*/
+
+    constructor(address _clearing) {
         clearing = _clearing;
-        manager = _manager;
     }
 
     function handleSettlement(
@@ -31,22 +36,7 @@ contract PermissionedMatch is IZone {
 
         require(
             msg.sender == clearing,
-            "PermissionedMatch: Only clearing can call this function"
-        );
-
-        (Instruction[] memory instructions, bytes memory witness) = abi.decode(
-            extraData,
-            (Instruction[], bytes)
-        );
-
-        require(
-            ClearingUtils.verifySequenceSignature(
-                orders,
-                abi.encode(instructions),
-                witness,
-                manager
-            ),
-            "PermissionedMatch: Invalid signature"
+            "OpenMatch: Only clearing can call this function"
         );
 
         /*//////////////////////////////////////////////////////////////
@@ -61,8 +51,25 @@ contract PermissionedMatch is IZone {
                                 PERFORM ACTIONS
         //////////////////////////////////////////////////////////////*/
 
+        for (uint256 i = 0; i < orders.length; i++) {
+            if (orders[i].extraData.length > 0) {
+                // Decode instructions from order.extraData and execute
+                Instruction[] memory instructions = abi.decode(
+                    orders[i].extraData,
+                    (Instruction[])
+                );
+                _execute(instructions);
+            }
+        }
+
         // Do execution
-        _execute(instructions);
+        if (extraData.length > 0) {
+            Instruction[] memory instructions = abi.decode(
+                extraData,
+                (Instruction[])
+            );
+            _execute(instructions);
+        }
 
         /*//////////////////////////////////////////////////////////////
                                     RELEASE
@@ -91,15 +98,6 @@ contract PermissionedMatch is IZone {
             (bool success, ) = to.call{value: value}(_data);
             require(success, "Call to external function failed");
         }
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                               MANAGEMENT
-    //////////////////////////////////////////////////////////////*/
-
-    function setNewmanager(address _newmanager) external {
-        require(manager == msg.sender, "Only manager can call this function");
-        manager = _newmanager;
     }
 
     /*//////////////////////////////////////////////////////////////

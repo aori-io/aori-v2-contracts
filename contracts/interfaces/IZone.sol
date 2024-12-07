@@ -13,8 +13,7 @@ interface IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
-        bytes memory extraData,
-        bytes memory witness
+        bytes memory extraData
     ) external;
 
     function handleDeposit(

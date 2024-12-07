@@ -47,8 +47,7 @@ contract AoriV2 is IClearing, EIP712 {
     // @notice Settle orders of the same zone (use a multi-call to settle multiple zones)
     function settle(
         SignedOrder[] calldata orders,
-        bytes calldata extraData,
-        bytes calldata witness
+        bytes calldata extraData
     ) external payable {
         CLEARING_PHASE.set(CLEARING_PHASE_ON);
 
@@ -60,7 +59,7 @@ contract AoriV2 is IClearing, EIP712 {
                 "Order chainId does not match"
             );
 
-            if (zone == address(0)) {
+            if (zone == address(0) || zone == address(this)) {
                 zone = orders[i].order.zone;
             } else if (
                 orders[i].order.zone != address(0) &&
@@ -84,7 +83,7 @@ contract AoriV2 is IClearing, EIP712 {
         // Handle settlement
         if (orders.length > 0) {
             require(zone != address(0), "Zone is not set");
-            IZone(zone).handleSettlement(orders, extraData, witness);
+            IZone(zone).handleSettlement(orders, extraData);
         }
 
         // Check that all orders have been paid
@@ -353,6 +352,11 @@ contract AoriV2 is IClearing, EIP712 {
             CONTEXT_SETTLED_ORDERS[orderHash].get() | ESCROW_BIT
         );
 
+        // If the input amount is 0, we don't need to escrow anything
+        if (signedOrder.order.inputAmount == 0) {
+            return;
+        }
+
         if (
             balances[signedOrder.order.offerer][signedOrder.order.inputToken] >
             signedOrder.order.inputAmount
@@ -428,6 +432,11 @@ contract AoriV2 is IClearing, EIP712 {
         CONTEXT_SETTLED_ORDERS[orderHash].set(
             CONTEXT_SETTLED_ORDERS[orderHash].get() | RELEASE_BIT
         );
+
+        // If order.outputAmount is 0, we don't need to release anything
+        if (signedOrder.order.outputAmount == 0) {
+            return;
+        }
 
         balances[msg.sender][signedOrder.order.outputToken] -= signedOrder
             .order

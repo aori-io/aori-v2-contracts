@@ -68,7 +68,18 @@ library ClearingUtils {
                     )
                 ),
                 abi.encodePacked(r, s, v)
-            );
+            ) ||
+            // TEMP: for orders with no extraData, allow for signing by orderHash
+            (signedOrder.extraData.length == 0 &&
+                signedOrder.order.offerer.isValidSignatureNow(
+                    keccak256(
+                        abi.encodePacked(
+                            "\x19Ethereum Signed Message:\n32",
+                            getOrderHash(signedOrder.order)
+                        )
+                    ),
+                    abi.encodePacked(r, s, v)
+                ));
     }
 
     function signatureIntoComponents(
@@ -93,7 +104,7 @@ library ClearingUtils {
         IClearing.SignedOrder[] memory signedOrders,
         bytes memory extraData
     ) internal pure returns (bytes32) {
-        bytes32[] memory orderHashes;
+        bytes32[] memory orderHashes = new bytes32[](signedOrders.length);
 
         for (uint i; i < signedOrders.length; i++) {
             orderHashes[i] = getSignatureMessage(signedOrders[i]);

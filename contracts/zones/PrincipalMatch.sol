@@ -20,12 +20,6 @@ contract PrincipalMatch is IZone {
     address public manager;
 
     /*//////////////////////////////////////////////////////////////
-                                 EVENTS
-    //////////////////////////////////////////////////////////////*/
-
-    event TradeSettled(string tradeId);
-
-    /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
     //////////////////////////////////////////////////////////////*/
 
@@ -36,11 +30,10 @@ contract PrincipalMatch is IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
-        bytes memory extraData,
-        bytes memory witness
+        bytes memory extraData
     ) external {
         /*//////////////////////////////////////////////////////////////
-                               VALIDATION
+                                    VALIDATION
         //////////////////////////////////////////////////////////////*/
 
         require(
@@ -48,10 +41,15 @@ contract PrincipalMatch is IZone {
             "PrincipalMatch: Only clearing can call this function"
         );
 
+        (Instruction[] memory instructions, bytes memory witness) = abi.decode(
+            extraData,
+            (Instruction[], bytes)
+        );
+
         require(
             ClearingUtils.verifySequenceSignature(
                 orders,
-                extraData,
+                abi.encode(instructions),
                 witness,
                 manager
             ),
@@ -70,12 +68,21 @@ contract PrincipalMatch is IZone {
                                 PERFORM ACTIONS
         //////////////////////////////////////////////////////////////*/
 
+        for (uint256 i = 0; i < orders.length; i++) {
+            if (orders[i].extraData.length > 0) {
+                // Decode instructions from order.extraData and execute
+                Instruction[] memory instructions = abi.decode(
+                    orders[i].extraData,
+                    (Instruction[])
+                );
+                _execute(instructions);
+            }
+        }
+
         // Do execution
-        (Instruction[] memory instructions, string memory tradeId) = abi.decode(
-            extraData,
-            (Instruction[], string)
-        );
-        _execute(instructions);
+        if (extraData.length > 0) {
+            _execute(instructions);
+        }
 
         /*//////////////////////////////////////////////////////////////
                                     RELEASE
@@ -84,12 +91,6 @@ contract PrincipalMatch is IZone {
         for (uint256 i = 0; i < orders.length; i++) {
             IClearing(clearing).release(orders[i]);
         }
-
-        /*//////////////////////////////////////////////////////////////
-                                POST-SETTLEMENT
-        //////////////////////////////////////////////////////////////*/
-
-        emit TradeSettled(tradeId);
     }
 
     function handleDeposit(

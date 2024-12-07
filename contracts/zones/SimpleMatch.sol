@@ -4,7 +4,6 @@ import {IZone} from "contracts/interfaces/IZone.sol";
 import {IClearing} from "contracts/interfaces/IClearing.sol";
 
 contract SimpleMatch is IZone {
-
     address public immutable clearing;
 
     constructor(address _clearing) {
@@ -17,10 +16,12 @@ contract SimpleMatch is IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
-        bytes memory,
         bytes memory
     ) external {
-        require(msg.sender == clearing, "SimpleMatch: Only clearing can call this function");
+        require(
+            msg.sender == clearing,
+            "SimpleMatch: Only clearing can call this function"
+        );
 
         for (uint256 i = 0; i < orders.length; i++) {
             IClearing(clearing).escrow(orders[i]);

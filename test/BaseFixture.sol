@@ -17,7 +17,6 @@ interface IERC20Mintable is IERC20 {
 }
 
 contract BaseFixture is Test {
-
     /*//////////////////////////////////////////////////////////////
                                 STORAGE
     //////////////////////////////////////////////////////////////*/
@@ -53,7 +52,7 @@ contract BaseFixture is Test {
     MockSimpleMatch internal simpleMatch;
     RevertingZone internal revertingZone;
     OnlyReleaseZone internal onlyReleaseZone;
-    
+
     /*//////////////////////////////////////////////////////////////
                                  USERS
     //////////////////////////////////////////////////////////////*/
@@ -148,11 +147,13 @@ contract BaseFixture is Test {
             toWithdraw: false
         });
 
-        bytes32 signatureMessage = ClearingUtils.getSignatureMessage(IClearing.SignedOrder({
-            order: order,
-            extraData: _extraData,
-            signature: ""
-        }));
+        bytes32 signatureMessage = ClearingUtils.getSignatureMessage(
+            IClearing.SignedOrder({
+                order: order,
+                extraData: _extraData,
+                signature: ""
+            })
+        );
 
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(
             _privateKey,
@@ -164,37 +165,29 @@ contract BaseFixture is Test {
             )
         );
 
-        return IClearing.SignedOrder({
-            order: order,
-            extraData: _extraData,
-            signature: abi.encodePacked(r, s, v)
-        });
+        return
+            IClearing.SignedOrder({
+                order: order,
+                extraData: _extraData,
+                signature: abi.encodePacked(r, s, v)
+            });
     }
 
     /*//////////////////////////////////////////////////////////////
                              WALLET ACTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function _mint(
-        address _from,
-        address _token,
-        uint256 _amount
-    ) public {
+    function _mint(address _from, address _token, uint256 _amount) public {
         vm.startPrank(_from);
         IERC20Mintable(_token).mint(_amount);
         vm.stopPrank();
     }
 
-    function _approve(
-        address _from,
-        address _token,
-        uint256 _amount
-    ) public {
+    function _approve(address _from, address _token, uint256 _amount) public {
         vm.startPrank(_from);
         IERC20(_token).approve(address(clearingInstance), _amount);
         vm.stopPrank();
     }
-
 
     function _mintAndApprove(
         address _from,
@@ -205,21 +198,13 @@ contract BaseFixture is Test {
         _approve(_from, _token, _amount);
     }
 
-    function _deposit(
-        address _from,
-        address _token,
-        uint256 _amount
-    ) public {
+    function _deposit(address _from, address _token, uint256 _amount) public {
         vm.startPrank(_from);
         IClearing(clearingInstance).deposit(_from, _token, _amount, "");
         vm.stopPrank();
     }
 
-    function _withdraw(
-        address _from,
-        address _token,
-        uint256 _amount
-    ) public {
+    function _withdraw(address _from, address _token, uint256 _amount) public {
         vm.startPrank(_from);
         IClearing(clearingInstance).withdraw(msg.sender, _token, _amount, "");
         vm.stopPrank();
@@ -228,12 +213,11 @@ contract BaseFixture is Test {
     function _settle(
         uint256 _privateKey,
         IClearing.SignedOrder[] memory _orders,
-        bytes memory _extraData,
-        bytes memory _witness
+        bytes memory _extraData
     ) public {
         address server = vm.addr(_privateKey);
         vm.startPrank(server);
-        IClearing(clearingInstance).settle(_orders, _extraData, _witness);
+        IClearing(clearingInstance).settle(_orders, _extraData);
         vm.stopPrank();
     }
 
@@ -256,7 +240,10 @@ contract BaseFixture is Test {
         vm.stopPrank();
     }
 
-    function _cancel(address _from, IClearing.SignedOrder memory _signedOrder) public {
+    function _cancel(
+        address _from,
+        IClearing.SignedOrder memory _signedOrder
+    ) public {
         vm.startPrank(_from);
         IClearing(clearingInstance).cancel(_signedOrder);
         vm.stopPrank();
@@ -269,7 +256,10 @@ contract BaseFixture is Test {
         return IClearing(clearingInstance).balanceOf(_account, _token);
     }
 
-    function _hasSettled(address _offerer, bytes32 _orderHash) public view returns (bool) {
+    function _hasSettled(
+        address _offerer,
+        bytes32 _orderHash
+    ) public view returns (bool) {
         return IClearing(clearingInstance).hasSettled(_offerer, _orderHash);
     }
 }

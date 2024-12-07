@@ -4,7 +4,6 @@ import {IZone} from "contracts/interfaces/IZone.sol";
 import {IClearing} from "contracts/interfaces/IClearing.sol";
 
 contract MockSimpleMatch is IZone {
-
     address public clearing;
 
     constructor(address _clearing) {
@@ -17,10 +16,8 @@ contract MockSimpleMatch is IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
-        bytes memory,
         bytes memory
     ) external {
-
         // NOTE: This is only for testing purposes, so we don't check that msg.sender is clearing
         // require(msg.sender == clearing, "SimpleMatch: Only clearing can call this function");
 

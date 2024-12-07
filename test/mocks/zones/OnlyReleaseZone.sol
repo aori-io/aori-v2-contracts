@@ -4,7 +4,6 @@ import {IZone} from "contracts/interfaces/IZone.sol";
 import {IClearing} from "contracts/interfaces/IClearing.sol";
 
 contract OnlyReleaseZone is IZone {
-
     address public clearing;
 
     constructor(address _clearing) {
@@ -17,8 +16,7 @@ contract OnlyReleaseZone is IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
-        bytes memory extraData,
-        bytes memory witness
+        bytes memory extraData
     ) external {
         // Do nothing
 
