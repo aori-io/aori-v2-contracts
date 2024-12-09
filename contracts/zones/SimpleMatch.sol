@@ -16,6 +16,7 @@ contract SimpleMatch is IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
+        bytes memory,
         bytes memory
     ) external {
         require(

@@ -47,7 +47,8 @@ contract AoriV2 is IClearing, EIP712 {
     // @notice Settle orders of the same zone (use a multi-call to settle multiple zones)
     function settle(
         SignedOrder[] calldata orders,
-        bytes calldata extraData
+        bytes calldata extraData,
+        bytes calldata witness
     ) external payable {
         CLEARING_PHASE.set(CLEARING_PHASE_ON);
 
@@ -83,7 +84,7 @@ contract AoriV2 is IClearing, EIP712 {
         // Handle settlement
         if (orders.length > 0) {
             require(zone != address(0), "Zone is not set");
-            IZone(zone).handleSettlement(orders, extraData);
+            IZone(zone).handleSettlement(orders, extraData, witness);
         }
 
         // Check that all orders have been paid

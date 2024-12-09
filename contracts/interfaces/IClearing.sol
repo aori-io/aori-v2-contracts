@@ -77,7 +77,8 @@ interface IClearing {
 
     function settle(
         SignedOrder[] memory orders,
-        bytes memory extraData
+        bytes memory extraData,
+        bytes memory witness
     ) external payable;
 
     function deposit(

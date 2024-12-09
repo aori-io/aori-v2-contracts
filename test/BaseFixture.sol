@@ -213,11 +213,12 @@ contract BaseFixture is Test {
     function _settle(
         uint256 _privateKey,
         IClearing.SignedOrder[] memory _orders,
-        bytes memory _extraData
+        bytes memory _extraData,
+        bytes memory _witness
     ) public {
         address server = vm.addr(_privateKey);
         vm.startPrank(server);
-        IClearing(clearingInstance).settle(_orders, _extraData);
+        IClearing(clearingInstance).settle(_orders, _extraData, _witness);
         vm.stopPrank();
     }
 

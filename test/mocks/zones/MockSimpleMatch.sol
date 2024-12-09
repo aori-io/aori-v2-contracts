@@ -16,6 +16,7 @@ contract MockSimpleMatch is IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
+        bytes memory,
         bytes memory
     ) external {
         // NOTE: This is only for testing purposes, so we don't check that msg.sender is clearing

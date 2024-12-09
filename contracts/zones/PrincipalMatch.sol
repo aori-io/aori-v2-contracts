@@ -30,7 +30,8 @@ contract PrincipalMatch is IZone {
 
     function handleSettlement(
         IClearing.SignedOrder[] memory orders,
-        bytes memory extraData
+        bytes memory extraData,
+        bytes memory witness
     ) external {
         /*//////////////////////////////////////////////////////////////
                                     VALIDATION
@@ -41,15 +42,10 @@ contract PrincipalMatch is IZone {
             "PrincipalMatch: Only clearing can call this function"
         );
 
-        (Instruction[] memory instructions, bytes memory witness) = abi.decode(
-            extraData,
-            (Instruction[], bytes)
-        );
-
         require(
             ClearingUtils.verifySequenceSignature(
                 orders,
-                abi.encode(instructions),
+                extraData,
                 witness,
                 manager
             ),
@@ -81,6 +77,11 @@ contract PrincipalMatch is IZone {
 
         // Do execution
         if (extraData.length > 0) {
+            Instruction[] memory instructions = abi.decode(
+                extraData,
+                (Instruction[])
+            );
+
             _execute(instructions);
         }
 
